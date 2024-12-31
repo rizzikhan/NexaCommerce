@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+    <div class="w-full max-w-2xl bg-white shadow-lg rounded-lg overflow-hidden">
+        <div class="bg-blue-600 text-white text-center py-4">
+            <h2 class="text-xl font-semibold">🗨️ Chat with Our Bot</h2>
+        </div>
+
+        <div id="chat-box" class="h-96 overflow-y-scroll p-4 bg-gray-50 space-y-2">
+            <p class="text-gray-700"><b>Bot:</b> Hello! How can I assist you today?</p>
+        </div>
+
+        <div class="flex items-center border-t border-gray-200 p-4 bg-white">
+            <input type="text" id="user-input" placeholder="Ask me anything..."
+                class="flex-1 px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <button onclick="sendMessage()"
+                class="bg-blue-600 text-white px-4 py-2 rounded-r-md hover:bg-blue-700 transition">
+                Send
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const chatBox = document.getElementById('chat-box');
+    const userInput = document.getElementById('user-input');
+
+    function appendMessage(sender, message) {
+        const p = document.createElement('p');
+        p.innerHTML = `<b>${sender}:</b> ${message}`;
+        p.className = sender === 'User' ? 'text-right text-blue-600' : 'text-left text-gray-700';
+        chatBox.appendChild(p);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function sendMessage() {
+        const message = userInput.value.trim();
+        if (!message) return;
+
+        appendMessage('User', message);
+        userInput.value = '';
+
+        fetch("{% url 'chatbot:process_query' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: `question=${encodeURIComponent(message)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.response) {
+                appendMessage('Bot', data.response);
+            } else {
+                appendMessage('Bot', 'Something went wrong. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            appendMessage('Bot', 'Error: Failed to connect to server.');
+        });
+    }
+</script>
+{% endblock %}

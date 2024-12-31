@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-10">
+    <h1 class="text-2xl font-bold mb-6">Your Orders</h1>
+
+    {% if orders %}
+    <ul class="list-disc pl-5">
+        {% for order in orders %}
+        <li class="mb-4">
+            <strong>Order ID:</strong> {{ order.id }}<br>
+            <strong>Total Amount:</strong> ${{ order.total_amount }}<br>
+            <strong>Date:</strong> {{ order.created_at }}<br>
+            <strong>Products:</strong>
+            <ul class="pl-5">
+                {% for product in order.products %}
+                <li>
+                    {{ product.name }} - Quantity: {{ product.quantity }} - Price: ${{ product.price }}
+                </li>
+                {% endfor %}
+            </ul>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>You have no completed orders.</p>
+    {% endif %}
+</div>
+{% endblock %}

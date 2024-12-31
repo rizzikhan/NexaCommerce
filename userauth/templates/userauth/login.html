@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 font-sans">
+    <div class="container mx-auto px-4 py-10">
+      <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
+        <h1 class="text-2xl font-bold text-center mb-6">Login</h1>
+
+        {% if message %}
+        <p class="text-green-500 text-sm mb-4">{{ message }}</p>
+        {% endif %} 
+        {% if error %}
+        <p class="text-red-500 text-sm mb-4">{{ error }}</p>
+        {% endif %}
+
+        <form method="post" class="space-y-4">
+          {% csrf_token %}
+          <div>
+            <label for="email" class="block text-gray-700 font-medium"
+              >Email</label
+            >
+            <input
+              type="email"
+              name="email"
+              id="email"
+              placeholder="Enter your email"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+
+          <div>
+            <label for="password" class="block text-gray-700 font-medium"
+              >Password</label
+            >
+            <input
+              type="password"
+              name="password"
+              id="password"
+              placeholder="Enter your password"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none"
+          >
+            Login
+          </button>
+        </form>
+
+        <p class="text-center text-sm text-gray-600 mt-4">
+          <a
+            href="{% url 'userauth:signup' %}"
+            class="text-blue-500 hover:underline"
+            >Signup</a
+          >
+          |
+          <a
+            href="{% url 'userauth:reset_password' %}"
+            class="text-blue-500 hover:underline"
+            >Reset Password</a
+          >
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

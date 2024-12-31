@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart Checkout</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    {% load custom_filters  %}
+    <div class="container mx-auto px-4 py-10">
+        <h1 class="text-2xl font-bold mb-6">Checkout</h1>
+
+        {% if cart_items %}
+        <table class="min-w-full bg-white rounded-lg shadow-md">
+            <thead>
+                <tr class="bg-gray-200 text-gray-600 uppercase text-sm">
+                    <th class="py-3 px-6 text-left">Product</th>
+                    <th class="py-3 px-6 text-center">Quantity</th>
+                    <th class="py-3 px-6 text-center">Price</th>
+                    <th class="py-3 px-6 text-center">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="py-3 px-6 text-left">
+                        {{ item.product.name }}
+                    </td>
+                    <td class="py-3 px-6 text-center">
+                        {{ item.quantity }}
+                    </td>
+                    <td class="py-3 px-6 text-center">
+                        ${{ item.product.price }}
+                    </td>
+                    <td class="py-3 px-6 text-center">
+                        ${{ item.product.price|floatformat:2|mul:item.quantity }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="mt-6 text-right">
+            <p class="text-lg font-semibold">Total Quantity: {{ total_quantity }}</p>
+            <p class="text-xl font-bold">Total Price: ${{ total_price|floatformat:2 }}</p>
+        </div>
+
+        {% else %}
+        <p class="text-gray-500">Your cart is empty.</p>
+        {% endif %}
+    </div>
+
+
+
+    {% csrf_token %}
+<div id="payment-form" >
+    <button class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600" id="checkout-button">Pay Now</button>
+</div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    var stripe = Stripe('pk_test_51QVznhLNMLN2YT09jSLF7OaHQOMtOBcm6wLth49uy13QEpc9T6d2MXkVTqb7RwBdjLptdGt1NeGtm8WKogRcVx1z00sf2SfliC');
+var checkoutButton = document.getElementById('checkout-button');
+
+checkoutButton.addEventListener('click', async function() {
+    try {
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        const response = await fetch('/api/cart/create-checkout-session/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+            credentials: 'include' 
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Checkout session creation failed');
+        }
+
+        const { sessionId } = await response.json();
+
+        const result = await stripe.redirectToCheckout({
+            sessionId: sessionId
+        });
+
+        if (result.error) {
+            alert(result.error.message);
+        }
+    } catch (error) {
+        console.error('Checkout Error:', error);
+        alert(error.message || 'There was an error processing your payment.');
+    }
+});
+</script>
+    
+</body>
+</html>
