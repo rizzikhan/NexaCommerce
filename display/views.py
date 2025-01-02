@@ -1,4 +1,3 @@
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -245,27 +244,4 @@ def about_us(request):
 
 
 
-
-
-
-# def upload_pdf(request):
-#     if request.method == 'POST':
-#         pdf_file = request.FILES.get('pdf_file')
-#         if pdf_file:
-#             document = Document.objects.create(name=pdf_file.name, pdf_file=pdf_file)
-#             return redirect('display:process_pdf', document_id=document.id)
-#     return render(request, 'display/upload.html')
-
-
-# def process_pdf_view(request, document_id):
-#     document = Document.objects.get(id=document_id)
-#     file_path = document.pdf_file.path
-    
-#     try:
-#         process_pdf(file_path)
-#         document.processed = True
-#         document.save()
-#         return JsonResponse({'status': 'success', 'message': 'PDF processed successfully.'})
-#     except Exception as e:
-#         return JsonResponse({'status': 'error', 'message': str(e)})
 

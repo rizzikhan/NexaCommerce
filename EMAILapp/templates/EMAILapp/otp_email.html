@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f9fafb;">
+
+    <div style="
+        max-width: 600px;
+        margin: 20px auto;
+        background-color: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+
+        <div style="
+            background-color: #2563eb;
+            color: #ffffff;
+            text-align: center;
+            padding: 24px;">
+            <h1 style="font-size: 24px; margin: 0;">🎉 Congratulations!</h1>
+            <p style="font-size: 14px; margin: 0; margin-top: 8px;">You’re Almost There!</p>
+        </div>
+
+        <div style="padding: 24px; text-align: center;">
+            <p style="font-size: 16px; color: #374151; margin-bottom: 16px;">
+                {{ congratulations_message }}
+            </p>
+            <p style="font-size: 14px; color: #6b7280; margin-bottom: 16px;">
+                {{ notice }}
+            </p>
+            <div style="
+                font-size: 32px;
+                font-weight: bold;
+                color: #2563eb;
+                background-color: #f3f4f6;
+                display: inline-block;
+                padding: 8px 24px;
+                margin: 16px 0;
+                border-radius: 8px;">
+                {{ otp }}
+            </div>
+            <p style="font-size: 14px; color: #6b7280; margin-top: 16px;">
+                Please use this OTP to verify your email.
+            </p>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 0 24px;">
+
+        <div style="
+            background-color: #f9fafb;
+            text-align: center;
+            padding: 16px;">
+            <p style="font-size: 12px; color: #6b7280; margin: 8px 0;">
+                If you encounter any issues, please contact us at 
+                <a href="mailto:support@example.com" style="color: #2563eb; text-decoration: underline;">
+                    support@example.com
+                </a>
+            </p>
+            <p style="font-size: 12px; color: #9ca3af; margin: 8px 0;">
+                &copy; {{ current_year }} Your Brand Name. All Rights Reserved.
+            </p>
+        </div>
+
+    </div>
+</body>
+</html>

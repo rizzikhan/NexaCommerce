@@ -13,7 +13,7 @@
     {% for product in merchant_products %}
       <div class="bg-white shadow-md rounded-lg overflow-hidden">
         {% if product.image %}
-          <a href="{% url 'display:detailedpage' product.id %}" class="block">
+          <a  class="block">
             {% cloudinary product.image format="jpg" crop="fill" alt=product.name %}
           </a>
         {% else %}
@@ -75,7 +75,7 @@
             <p class="text-green-500 text-sm mt-1">
               In Stock ({{ product.stock }} available)
             </p>
-
+            {% if user.is_authenticated %}
             <div class="flex items-center mt-2 gap-1">
               <input
                 type="number"
@@ -111,6 +111,23 @@
                 </svg>
               </button>
             </div>
+            {% else %}
+            <div class="mt-4">
+            <a
+              href="{% url 'userauth:login' %}"
+              class="bg-blue-500 text-white px-4 py-2 mr-4 rounded hover:bg-blue-600"
+            >
+              Sign In
+            </a>
+            <a
+            href="{% url 'userauth:signup' %}"
+            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Sign Up
+          </a>
+          </div>
+            {% endif %}
+
           {% else %}
             <button
               class="bg-gray-400 text-white px-4 py-2 rounded cursor-not-allowed"

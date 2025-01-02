@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
         const productCard = `
             <div class="bg-white shadow-md rounded-lg overflow-hidden">
-    <a href="http://127.0.0.1:8000/api/products/${product.id}/detailpage" class="block">
+    <a  class="block">
       ${
         product.image.includes('res.cloudinary.com')
           ? `<img 

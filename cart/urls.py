@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import CartAPIView
 from . import views
-from .views import CreateCheckoutSessionAPIView  , CheckoutCancelView , OrderDoneListView ,orders_template_view 
+from .views import CreateCheckoutSessionAPIView, CheckoutCancelView , OrderDoneListView ,orders_template_view 
 
 
 app_name = "cart"

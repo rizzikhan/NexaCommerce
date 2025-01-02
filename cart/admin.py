@@ -20,7 +20,7 @@ class CartAdmin(admin.ModelAdmin):
 
 @admin.register(OrderDone)
 class OrderDoneAdmin(admin.ModelAdmin):
-    list_display = ('user', 'total_amount', 'refund_status', 'is_refunded', 'created_at', 'intent')
+    list_display = ('user', 'order_id', 'total_amount', 'refund_status', 'is_refunded', 'created_at', 'intent')
     list_filter = ('user', 'is_refunded', 'refund_status', 'created_at')
     search_fields = ('user__username', 'products', 'stripe_session_id', 'intent')
     ordering = ('-created_at',)

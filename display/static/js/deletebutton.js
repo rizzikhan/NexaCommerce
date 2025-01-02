@@ -71,9 +71,19 @@ document.addEventListener("DOMContentLoaded", () => {
                     container.innerHTML = "<p>No products to show.</p>";
                 } else {
                     data.forEach((product) => {
+                        const imageUrl = product.image.includes('res.cloudinary.com')
+                            ? product.image
+                            : `https://res.cloudinary.com/dq8k7uqzw/${product.image.replace(/^image\/upload\//, '')}`;
+    
                         const productCard = `
                             <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                                <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover" />
+                                <a  class="block">
+                                    <img 
+                                        src="${imageUrl}" 
+                                        alt="${product.name}" 
+                                        class="w-full h-48 object-cover transition-transform duration-300 hover:scale-105" 
+                                    />
+                                </a>
                                 <div class="p-4">
                                     <h3 class="text-lg font-semibold">${product.name}</h3>
                                     <p class="text-gray-500 text-sm">${product.description}</p>
@@ -99,7 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch((error) => console.error("Error fetching merchant products:", error));
     }
-
+    
     
     function getCSRFToken() {
         const cookies = document.cookie.split("; ");

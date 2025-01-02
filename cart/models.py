@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from display.models import Product
+from django.utils import timezone
 
 class Cart(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -13,6 +14,7 @@ class Cart(models.Model):
     
 
 class OrderDone(models.Model):
+    order_id = models.CharField(max_length=20, unique=True , editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     products = models.JSONField()  
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -24,4 +26,12 @@ class OrderDone(models.Model):
 
     def __str__(self):
         return f"Order {self.id} - User: {self.user.username}"
+    
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            today = timezone.now().strftime('%Y%m%d')
+            count_today = OrderDone.objects.filter(created_at__date=timezone.now().date()).count()
+            self.order_id = f'ORD{today}-{count_today + 1:03d}'
+        super().save(*args, **kwargs)
 

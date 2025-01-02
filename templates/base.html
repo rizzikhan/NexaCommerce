@@ -38,7 +38,7 @@
         />
         <button
           type="submit"
-          class="bg-blue-500 text-white px-4 py-2  rounded-r-lg hover:bg-blue-600"
+          class="bg-yellow-500 text-white px-4 py-2  rounded-r-lg hover:bg-blue-600"
         >
           Search
         </button>
@@ -51,15 +51,16 @@
         >
           Home
         </a>
+        <a
+        href="{% url 'chatbot:chatbot' %}"
+        class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
+      >
+        Help
+      </a>
         <div class="flex items-center space-x-4">
-          <a href="{% url 'display:about_us' %}" class="bg-orange-500 mr-40 text-white px-4 py-2 rounded hover:bg-yellow-600">About Us</a>
+          <a href="{% url 'display:about_us' %}" class="bg-yellow-500 mr-40 text-white px-4 py-2 rounded hover:bg-yellow-600">About Us</a>
       </div>
-      <a
-      href="{% url 'chatbot:chatbot' %}"
-      class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
-    >
-      Help
-    </a>
+
 
  
   
@@ -146,7 +147,7 @@
 <!-- delete confirmation modal -->
 <div
 id="deleteConfirmationModal"
-class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden"
+class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden z-50"
 >
 <div class="bg-white rounded-lg p-6 w-96 shadow-lg relative">
     <button
@@ -180,7 +181,7 @@ class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center 
     <!-- cart modal -->
 <div
   id="cartModal"
-  class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden"
+  class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden z-50"
 >
   <div class="bg-white rounded-lg p-6 w-[800px] shadow-lg relative"> 
     <button
@@ -205,7 +206,7 @@ class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center 
     <!-- profile modal -->
      <div
      id="profileModal"
-     class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden"
+     class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden z-50"
    >
      <div class="bg-white rounded-lg p-6 w-1/2 h-3/4 shadow-lg relative overflow-y-auto">
        <button
@@ -248,7 +249,7 @@ class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center 
 <!-- add product modal -->
 <div
 id="addProductModal"
-class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden"
+class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden z-50"
 >
 <div class="bg-white rounded-lg p-6 w-96 shadow-lg relative">
   <button
@@ -336,7 +337,7 @@ class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center 
 <!-- update modal -->
 <div
   id="updateModal"
-  class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden"
+  class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden z-50"
 >
   <div class="bg-white rounded-lg p-6 w-96 shadow-lg relative">
     <button

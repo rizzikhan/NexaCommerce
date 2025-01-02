@@ -18,6 +18,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from .models import OrderDone, Cart  
 from userauth.models import CustomUser
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from datetime import datetime
 
 
 
@@ -28,7 +31,7 @@ class CartAPIView(APIView):
         print(f"Cart items for user {request.user}: {cart_items}")
         serializer = CartSerializer(cart_items, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
+    #for add to cart 
     def post(self, request):
         product_id = request.data.get("product_id")
         try: 
@@ -141,6 +144,27 @@ def CreateCheckoutSessionAPIView(request):
         print(f"Unexpected error in checkout: {e}")
         return Response({"error": "An unexpected error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
+
+
+def send_order_receipt(user_email, products, total_amount ,order_id):
+    subject = 'Your Order Receipt'
+    from_email = settings.EMAIL_HOST_USER
+    to = [user_email]
+    
+    context = {
+        'cart_items': products,
+        'order_total': total_amount,
+        'current_year': datetime.now().year,
+        'order_id':order_id
+    }
+    
+    html_content = render_to_string('cart/order_receipt.html', context)
+    text_content = f"Thank you for your order! Your order ID is.{order_id} Total: ${total_amount}"
+    
+    msg = EmailMultiAlternatives(subject, text_content, from_email, to)
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
+    print("Order receipt email sent successfully")
     
 @csrf_exempt
 def stripe_webhook(request):
@@ -206,19 +230,29 @@ def stripe_webhook(request):
             print(f"total_amount: {total_amount}")
             print(f"stripe_session_id: {session['id']}")
 
-            OrderDone.objects.create(
+            order =OrderDone.objects.create(
                 user=user,
                 products=products,
                 total_amount=total_amount,
                 stripe_session_id=session['id'],
-                intent=payment_intent_id
+                intent=payment_intent_id,
             )
+            order_id = order.order_id
+
             print(f"user: {user}")
+            print(f"order_id: {order_id}")
             print(f"products: {products}")
             print(f"total_amount: {total_amount}")
             print(f"stripe_session_id: {session['id']}")
             print(f"intent: {payment_intent_id}")
 
+            try:
+                send_order_receipt(user.email, products, total_amount ,order_id)
+                print("Email sent successfully")
+            except Exception as email_error:
+                print(f"Failed to send email: {email_error}")
+                return HttpResponseBadRequest("Failed to send order email")
+            
             cart_items.delete()
 
             print(f"Order saved and cart cleared for user {user.username}")
