@@ -5,15 +5,24 @@
 {% load cloudinary %}
 
 {% block content %}
+<!-- categories  -->
+<div class="container mx-auto px-4 py-8">
+  <h2 class="text-2xl font-bold mb-6">Categories</h2>
+  <div id="categoriesContainer" class="flex flex-wrap gap-4 justify-center items-center">
 
-<!-- merchant products  -->
+  </div>
+</div>
+
+<!-- merchant products -->
+{% if user.role == 'merchant' %}
 <h2 class="text-2xl font-bold mb-6 mt-4 ml-5 mr-5">Your Products</h2>
+{% endif %}
 <div id="merchantProducts" class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-6 ml-5 mr-5">
   {% if merchant_products %}
     {% for product in merchant_products %}
       <div class="bg-white shadow-md rounded-lg overflow-hidden">
         {% if product.image %}
-          <a  class="block">
+          <a class="block">
             {% cloudinary product.image format="jpg" crop="fill" alt=product.name %}
           </a>
         {% else %}
@@ -26,14 +35,22 @@
           <h3 class="text-lg font-semibold">{{ product.name }}</h3>
           <p class="text-gray-500 text-sm">{{ product.description }}</p>
           <p class="text-blue-500 font-bold text-lg">${{ product.price }}</p>
+          <p class="text-sm text-green-600 font-medium mt-2">
+            Category: 
+            {% if product.category %}
+              {{ product.category.name }}
+            {% else %}
+              No Category
+            {% endif %}
+          </p>
           <button
-            class="update-product bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            class="update-product bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mt-2"
             data-product-id="{{ product.id }}"
           >
             Update
           </button>
           <button
-            class="delete-product bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            class="delete-product bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 mt-2"
             data-product-id="{{ product.id }}"
           >
             Delete
@@ -42,19 +59,67 @@
       </div>
     {% endfor %}
   {% else %}
+  {% if user.role == 'merchant' %}
     <p class="text-gray-500 ml-5">No products available.</p>
+    {% endif %}
   {% endif %}
 </div>
 
-<!-- all products  -->
+<button id="filterButton" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+  Filter and Sort
+</button>
+
+
+<div id="filterSidebar" class="fixed top-0 right-0 w-80 h-full bg-white shadow-lg hidden z-50">
+    <div class="p-4">
+        <h2 class="text-xl font-bold mb-4">Filter & Sort</h2>
+        
+        <label class="block">Category:</label>
+        <select id="categoryFilter" class="w-full mb-2"></select>
+        
+        <label class="block">Price Range:</label>
+        <input type="number" id="priceMin" placeholder="Min Price" class="w-full mb-2">
+        <input type="number" id="priceMax" placeholder="Max Price" class="w-full mb-2">
+        
+        <label class="block">Stock:</label>
+        <select id="stockFilter" class="w-full mb-2">
+            <option value="">All</option>
+            <option value="true">In Stock</option>
+        </select>
+        
+<label for="sortFilter" class="block text-sm font-medium text-gray-700">Sort By:</label>
+<select id="sortFilter" class="w-full border border-gray-300 rounded-md p-2 mb-4">
+    <option value="">Default</option>
+    <option value="price_low_high">Price: Low to High</option>
+    <option value="price_high_low">Price: High to Low</option>
+    <option value="new_to_old">Newest First</option>
+    <option value="old_to_new">Oldest First</option>
+</select>
+
+        
+        <button id="applyFilters" class="w-full bg-blue-500 text-white py-2 mb-2 rounded">Apply</button>
+        <button id="clearFilters" class="w-full bg-gray-500 text-white py-2 rounded">Clear</button>
+        <button id="closeFilterSidebar" class="w-full bg-red-500 text-white py-2 mt-4 rounded">Close</button>
+    </div>
+</div>
+
+<!-- All Products -->
 <div class="container mx-auto px-4 py-8">
+  {% if user.role == 'normal' %}
   <h2 class="text-2xl font-bold mb-6">Products</h2>
+  {% endif %}
+
   <div id="productContainer" class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-6 ml-5 mr-5">
     {% for product in products %}
-      <div class="bg-white shadow-md rounded-lg overflow-hidden">
+      <div 
+        class="product-card bg-white shadow-md rounded-lg overflow-hidden" 
+        data-product-id="{{ product.id }}" 
+        data-price="{{ product.price }}" 
+        data-created-at="{{ product.created_at|date:'Y-m-d H:i:s' }}"
+      >
         {% if product.image %}
           <a href="{% url 'display:detailedpage' product.id %}" class="block">
-            {% cloudinary product.image format="jpg"  crop="fill" alt=product.name %}
+            {% cloudinary product.image format="jpg" crop="fill" alt=product.name %}
           </a>
         {% else %}
           <div class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500">
@@ -70,6 +135,15 @@
             {{ product.description|truncatechars:25 }}
           </p>
           <p class="text-blue-500 font-bold text-lg">${{ product.price }}</p>
+
+          <p class="text-sm text-green-600 font-medium mt-1">
+            Category: 
+            {% if product.category %}
+              {{ product.category.name }}
+            {% else %}
+              No Category
+            {% endif %}
+          </p>
 
           {% if product.stock > 0 %}
             <p class="text-green-500 text-sm mt-1">
@@ -120,11 +194,11 @@
               Sign In
             </a>
             <a
-            href="{% url 'userauth:signup' %}"
-            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            Sign Up
-          </a>
+              href="{% url 'userauth:signup' %}"
+              class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Sign Up
+            </a>
           </div>
             {% endif %}
 

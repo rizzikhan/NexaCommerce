@@ -1,13 +1,13 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer ,CategorySerializer
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404 
 from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
-from .models import Product, Comment, Watchlist 
+from .models import Product, Comment, Watchlist ,Category
 from django.http import JsonResponse
 from django.shortcuts import render 
 from django.http import JsonResponse
@@ -44,7 +44,56 @@ def display(request):
 
 
 
-#searchAPI
+def product_list(request):
+    products = Product.objects.all()
+
+    price_min = request.GET.get('price_min')
+    price_max = request.GET.get('price_max')
+    category = request.GET.get('category')
+    in_stock = request.GET.get('in_stock')
+    sort_by = request.GET.get('sort')
+
+    if price_min:
+        products = products.filter(price__gte=price_min)
+    if price_max:
+        products = products.filter(price__lte=price_max)
+    if category:
+        products = products.filter(category__id=category)
+    if in_stock == 'true':
+        products = products.filter(stock__gt=0)
+
+    sort_options = {
+        'price_low_high': 'price',
+        'price_high_low': '-price',
+        'new_to_old': '-created_at',
+        'old_to_new': 'created_at'
+    }
+    if sort_by in sort_options:
+        products = products.order_by(sort_options[sort_by])
+
+    product_data = [
+        {
+            'id': product.id,
+            'name': product.name,
+            'description': product.description,
+            'price': float(product.price),
+            'category': product.category.name if product.category else 'Uncategorized',
+            'stock': product.stock,
+            'image': product.image.url if product.image else None,
+            'in_watchlist': False  
+        }
+        for product in products
+    ]
+    return JsonResponse({'products': product_data})
+
+
+
+def category_products(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    products = Product.objects.filter(category=category)
+    return render(request, 'display/category_products.html', {'category': category, 'products': products})
+
+
 class ProductSearchAPIView(APIView):
     def get(self, request):
         search_query = request.GET.get('search')  
@@ -60,7 +109,6 @@ class ProductSearchAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-# for updating merchant added product 
 class ProductDetailAPIView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Product.objects.all()
@@ -70,21 +118,39 @@ class ProductDetailAPIView(RetrieveUpdateDestroyAPIView):
         return Product.objects.filter(merchant=self.request.user)
     
 
-    #for adding a new product
+class CategoryListAPIView(APIView):
+    def get(self, request):
+        categories = Category.objects.all()
+        print(f"categories {categories}")
+        serializer = CategorySerializer(categories, many=True)
+        print(f"serializer.data{serializer.data}")
+        return Response(serializer.data)
+
 class AddProductAPIView(APIView):
     def post(self, request):
         print("add product API called")
+        
+        category_id = request.data.get("category")
+
+        if not category_id:
+            return Response({"error": "Category is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            category = Category.objects.get(id=category_id)
+        except Category.DoesNotExist:
+            return Response({"error": "Invalid category selected"}, status=status.HTTP_400_BAD_REQUEST)
+        
         serializer = ProductSerializer(data=request.data, context={"request": request})  
 
         if serializer.is_valid():
-            product = serializer.save() 
+            product = serializer.save(category=category) 
             return Response({"product": ProductSerializer(product).data}, status=status.HTTP_201_CREATED)
         else:
             print("Serializer errors:", serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         
 
-#for deleting merchant product
 class DeleteProductAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -97,7 +163,6 @@ class DeleteProductAPIView(APIView):
             return Response({"error": "Product not found or permission denied."}, status=404)
 
 
-#for refreshing merchant products after updation/deletion
 class MerchantProductsAPIView(APIView):
     permission_classes = [IsAuthenticated]
 

@@ -1,54 +1,88 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const updateProductForm = document.getElementById("updateProductForm");
-    const updateModal = document.getElementById("updateModal");
-    const closeUpdateModal = document.getElementById("closeUpdateModal");
-  
-    const merchantProductsContainer = document.getElementById("merchantProductsContainer");
-  
-    document.addEventListener("click", (event) => {
-      if (event.target.classList.contains("update-product")) {
-        const productId = event.target.getAttribute("data-product-id");
-  
-        fetch(`/api/products/${productId}/update`)
-          .then((response) => response.json())
-          .then((product) => {
-            document.getElementById("updateProductName").value = product.name;
-            document.getElementById("updateProductPrice").value = product.price;
-            document.getElementById("updateProductDescription").value = product.description;
-  
-            updateModal.setAttribute("data-product-id", productId);
-            updateModal.classList.remove("hidden");
-          });
-      }
-    });
-  
-    document.getElementById("saveProductChanges").addEventListener("click", () => {
-      const productId = updateModal.getAttribute("data-product-id");
-  
-      fetch(`/api/products/${productId}/update`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": getCSRFToken(),
-        },
-        body: JSON.stringify({
-          name: document.getElementById("updateProductName").value,
-          price: document.getElementById("updateProductPrice").value,
-          description: document.getElementById("updateProductDescription").value,
-        }),
-      })
-        .then(() => {
-          updateModal.classList.add("hidden");
-          fetchMerchantProducts(); 
-          showNotification("Success", "Product updated successfully!");
+  const updateProductForm = document.getElementById("updateProductForm");
+  const updateModal = document.getElementById("updateModal");
+  const closeUpdateModal = document.getElementById("closeUpdateModal");
+  const merchantProductsContainer = document.getElementById("merchantProductsContainer");
 
-        })
-        .catch((error) => console.error("Error updating product:", error));
-    });
-  
-    closeUpdateModal.addEventListener("click", () => {
+  document.addEventListener("click", (event) => {
+      if (event.target.classList.contains("update-product")) {
+          const productId = event.target.getAttribute("data-product-id");
+
+          fetch(`/api/products/${productId}/update`)
+              .then((response) => {
+                  if (!response.ok) {
+                      throw new Error(`HTTP error! Status: ${response.status}`);
+                  }
+                  return response.json();
+              })
+              .then((product) => {
+                  document.getElementById("updateProductName").value = product.name;
+                  document.getElementById("updateProductPrice").value = product.price;
+                  document.getElementById("updateProductDescription").value = product.description;
+                  updateModal.setAttribute("data-product-id", productId);
+                  updateModal.classList.remove("hidden");
+              })
+              .catch((error) => {
+                  console.error("Error fetching product details:", error);
+                  showNotification("Error", "Failed to fetch product details.");
+              });
+      }
+  });
+
+  document.getElementById("saveProductChanges").addEventListener("click", () => {
+      const productId = updateModal.getAttribute("data-product-id");
+
+      const name = document.getElementById("updateProductName").value.trim();
+      const priceInput = document.getElementById("updateProductPrice").value.trim();
+      const description = document.getElementById("updateProductDescription").value.trim();
+
+      
+      const price = parseFloat(priceInput);
+
+      if (!name || !description) {
+          showNotification("Error", "Name and Description cannot be empty.");
+          return;
+      }
+
+      if (isNaN(price) || price <= 0) {
+          showNotification("Error", "Price must be a positive number greater than zero.");
+          return;
+      }
+
+      fetch(`/api/products/${productId}/update`, {
+          method: "PUT",
+          headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCSRFToken(),
+          },
+          body: JSON.stringify({
+              name: name,
+              price: price,
+              description: description,
+          }),
+      })
+          .then((response) => {
+              if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              return response.json();
+          })
+          .then((data) => {
+              updateModal.classList.add("hidden");
+              fetchMerchantProducts();
+              showNotification("Success", "Product updated successfully!");
+          })
+          .catch((error) => {
+              console.error("Error updating product:", error);
+              showNotification("Error", "Failed to update product. Please try again.");
+          });
+  });
+
+  closeUpdateModal.addEventListener("click", () => {
       updateModal.classList.add("hidden");
-    });
+  });
+
+
   
     function getCSRFToken() {
       const cookies = document.cookie.split("; ");

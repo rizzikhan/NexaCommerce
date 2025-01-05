@@ -26,4 +26,10 @@ urlpatterns = [
     path('about/', views.about_us, name='about_us'),
 
 
+    path('api/categories/', CategoryListAPIView.as_view(), name='api-categories'),
+    path('category/<int:category_id>/', views.category_products, name='category_products'),
+
+    path('api/filterproducts/', product_list, name='product_list'),
+
+
 ]

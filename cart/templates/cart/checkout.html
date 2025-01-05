@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 font-sans">
-    {% load custom_filters  %}
+    {% load custom_filters %}
     <div class="container mx-auto px-4 py-10">
         <h1 class="text-2xl font-bold mb-6">Checkout</h1>
 
@@ -28,12 +28,19 @@
                         {{ item.product.name }}
                     </td>
                     <td class="py-3 px-6 text-center">
-                        {{ item.quantity }}
+                        <input 
+                            type="number" 
+                            min="1" 
+                            max="{{ item.product.stock }}" 
+                            value="{{ item.quantity }}" 
+                            data-cart-item-id="{{ item.id }}" 
+                            class="quantity-input w-16 px-2 py-1 border rounded text-center"
+                        />
                     </td>
                     <td class="py-3 px-6 text-center">
                         ${{ item.product.price }}
                     </td>
-                    <td class="py-3 px-6 text-center">
+                    <td class="py-3 px-6 text-center subtotal" data-cart-item-id="{{ item.id }}">
                         ${{ item.product.price|floatformat:2|mul:item.quantity }}
                     </td>
                 </tr>
@@ -42,8 +49,8 @@
         </table>
 
         <div class="mt-6 text-right">
-            <p class="text-lg font-semibold">Total Quantity: {{ total_quantity }}</p>
-            <p class="text-xl font-bold">Total Price: ${{ total_price|floatformat:2 }}</p>
+            <p class="text-lg font-semibold">Total Quantity: <span id="total-quantity">{{ total_quantity }}</span></p>
+            <p class="text-xl font-bold">Total Price: $<span id="total-price">{{ total_price|floatformat:2 }}</span></p>
         </div>
 
         {% else %}
@@ -51,51 +58,93 @@
         {% endif %}
     </div>
 
-
-
     {% csrf_token %}
-<div id="payment-form" >
-    <button class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600" id="checkout-button">Pay Now</button>
-</div>
+    <div id="payment-form" class="mt-6 text-center">
+        <button class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600" id="checkout-button">Pay Now</button>
+    </div>
 
-<script src="https://js.stripe.com/v3/"></script>
-<script>
-    var stripe = Stripe('pk_test_51QVznhLNMLN2YT09jSLF7OaHQOMtOBcm6wLth49uy13QEpc9T6d2MXkVTqb7RwBdjLptdGt1NeGtm8WKogRcVx1z00sf2SfliC');
-var checkoutButton = document.getElementById('checkout-button');
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        var stripe = Stripe('pk_test_51QVznhLNMLN2YT09jSLF7OaHQOMtOBcm6wLth49uy13QEpc9T6d2MXkVTqb7RwBdjLptdGt1NeGtm8WKogRcVx1z00sf2SfliC');
+        var checkoutButton = document.getElementById('checkout-button');
 
-checkoutButton.addEventListener('click', async function() {
-    try {
-        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        
-        const response = await fetch('/api/cart/create-checkout-session/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken,
-            },
-            credentials: 'include' 
+        checkoutButton.addEventListener('click', async function() {
+            try {
+                const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                
+                const response = await fetch('/api/cart/create-checkout-session/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken,
+                    },
+                    credentials: 'include' 
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Checkout session creation failed');
+                }
+
+                const { sessionId } = await response.json();
+
+                const result = await stripe.redirectToCheckout({
+                    sessionId: sessionId
+                });
+
+                if (result.error) {
+                    alert(result.error.message);
+                }
+            } catch (error) {
+                console.error('Checkout Error:', error);
+                alert(error.message || 'There was an error processing your payment.');
+            }
         });
+        document.addEventListener("DOMContentLoaded", () => {
+    const quantityInputs = document.querySelectorAll(".quantity-input");
+    const totalQuantityElement = document.getElementById("total-quantity");
+    const totalPriceElement = document.getElementById("total-price");
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Checkout session creation failed');
-        }
+    quantityInputs.forEach(input => {
+        input.addEventListener("change", (event) => {
+            const newQuantity = parseInt(event.target.value);
+            const cartItemId = event.target.getAttribute("data-cart-item-id");
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-        const { sessionId } = await response.json();
-
-        const result = await stripe.redirectToCheckout({
-            sessionId: sessionId
+            fetch("/api/cart/update-quantity/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken,
+                },
+                body: JSON.stringify({
+                    cart_item_id: cartItemId,
+                    quantity: newQuantity
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    document.querySelector(`.subtotal[data-cart-item-id='${cartItemId}']`).innerText = `$${parseFloat(data.subtotal).toFixed(2)}`;
+                    totalQuantityElement.innerText = data.total_quantity;
+                    totalPriceElement.innerText = parseFloat(data.total_price).toFixed(2);
+                }
+            })
+            .catch(error => {
+                console.error("Error updating quantity:", error);
+                alert("Failed to update quantity. Please try again.");
+            });
         });
-
-        if (result.error) {
-            alert(result.error.message);
-        }
-    } catch (error) {
-        console.error('Checkout Error:', error);
-        alert(error.message || 'There was an error processing your payment.');
-    }
+    });
 });
-</script>
-    
+
+    </script>
 </body>
 </html>

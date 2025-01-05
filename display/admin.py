@@ -1,13 +1,17 @@
 from django.contrib import admin
-from .models import Product , Watchlist , Comment 
+from .models import Product , Watchlist , Comment , Category
 
 
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ['name', 'description']
+    search_fields = ['name']
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name',  'description','price','stock', 'merchant' ,'created_at','updated_at')
-    list_filter = ('stock', 'price','merchant')
+    list_display = ('name',  'description','price','stock', 'merchant' ,'created_at','updated_at','category')
+    list_filter = ('stock', 'price','merchant','category')
     search_fields = ('name','description','stock')
     readonly_fields = ('created_at', 'updated_at')
     list_display_links = ["name","description"]

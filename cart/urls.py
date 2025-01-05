@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import CartAPIView
 from . import views
-from .views import CreateCheckoutSessionAPIView, CheckoutCancelView , OrderDoneListView ,orders_template_view 
+from .views import CreateCheckoutSessionAPIView, CheckoutCancelView , OrderDoneListView ,orders_template_view ,update_cart_quantity
 
 
 app_name = "cart"
@@ -26,6 +26,8 @@ urlpatterns = [
     path('refund/', views.process_refund, name='process-refund'), #refund API 
 
     path('add/', CartAPIView.as_view(), name='addtocart'),  # Merchant post product 
+
+    path('update-quantity/', update_cart_quantity, name='update-cart-quantity'),
 
 
 ]

@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", () => {
   const addToCartButtons = document.querySelectorAll(".add-to-cart");
   const cartButton = document.getElementById("cartButton");
@@ -6,35 +5,52 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeCartModal = document.getElementById("closeCartModal");
   const cartItemsContainer = document.getElementById("cartItems");
 
-  
-
   addToCartButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const productId = button.getAttribute("data-product-id");
-      console.log("Add to Cart clicked for Product ID:", productId);
-      const quantityInput = document.querySelector(
-        `.quantity-input[data-product-id="${productId}"]`
-      );
-      const quantity = quantityInput ? quantityInput.value : 1;
-      fetch("/api/cart/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": getCSRFToken(),
-        },
-        body: JSON.stringify({ product_id: productId, quantity: quantity }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          showNotification("Success", "Product added to cart successfully!");
-          console.log("Product added to cart response:", data);
-        })
-        .catch((error) =>
-          console.error("Error adding product to cart:", error)
-        );
-    });
-  });
+      button.addEventListener("click", () => {
+          const productId = button.getAttribute("data-product-id");
+          console.log("Add to Cart clicked for Product ID:", productId);
 
+          const quantityInput = document.querySelector(
+              `.quantity-input[data-product-id="${productId}"]`
+          );
+
+          const quantity = quantityInput ? parseInt(quantityInput.value, 10) : 1;
+          const stock = parseInt(quantityInput.getAttribute("max"), 10); 
+
+          if (isNaN(quantity) || quantity <= 0) {
+              showNotification("Error", "Quantity must be a positive number.");
+              return;
+          }
+
+          if (quantity > stock) {
+              showNotification("Error", "Quantity exceeds available stock.");
+              return;
+          }
+
+          fetch("/api/cart/", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+                  "X-CSRFToken": getCSRFToken(),
+              },
+              body: JSON.stringify({ product_id: productId, quantity: quantity }),
+          })
+              .then((response) => {
+                  if (!response.ok) {
+                      throw new Error(`HTTP error! Status: ${response.status}`);
+                  }
+                  return response.json();
+              })
+              .then((data) => {
+                  showNotification("Success", "Product added to cart successfully!");
+                  console.log("Product added to cart response:", data);
+              })
+              .catch((error) => {
+                  console.error("Error adding product to cart:", error);
+                  showNotification("Error", "Failed to add product to cart.");
+              });
+      });
+  });
   cartButton.addEventListener("click", () => {
     fetchCartItems();
     cartModal.classList.remove("hidden");

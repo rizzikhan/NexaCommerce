@@ -21,44 +21,69 @@ from userauth.models import CustomUser
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from datetime import datetime
+from django.http import JsonResponse
+import json
 
 
 
 class CartAPIView(APIView):
-    #for getting cart item of specifc user 
+    # For getting cart items of a specific user
     def get(self, request):
         cart_items = Cart.objects.filter(user=request.user)
         print(f"Cart items for user {request.user}: {cart_items}")
         serializer = CartSerializer(cart_items, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    #for add to cart 
+
+    # For adding to cart
     def post(self, request):
         product_id = request.data.get("product_id")
-        try: 
-            print("we are in post of cartapiview in cart app ")
+        try:
+            print("We are in POST of CartAPIView in cart app")
             quantity = int(request.data.get("quantity", 1))
             if quantity <= 0:
                 raise ValueError("Quantity must be positive")
         except (ValueError, TypeError):
-            return Response({"error": "Invalid quantity provided"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Invalid quantity provided"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         if not product_id:
-            return Response({"error": "Product ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Product ID is required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         try:
             product = Product.objects.get(id=product_id)
         except Product.DoesNotExist:
-            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Product not found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        if quantity > product.stock:
+            return Response(
+                {"error": "Quantity exceeds available stock"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         cart_item, created = Cart.objects.get_or_create(user=request.user, product=product)
         if created:
             cart_item.quantity = quantity
         else:
+            if cart_item.quantity + quantity > product.stock:
+                return Response(
+                    {"error": "Total quantity in cart exceeds available stock"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             cart_item.quantity += quantity
-        cart_item.save()
 
+        cart_item.save()
         print(f"Cart item created: {created}, Quantity: {cart_item.quantity}")
         return Response(CartSerializer(cart_item).data, status=status.HTTP_201_CREATED)
+
+        
 
 #for removing item from cart Remove button 
     def delete(self, request, pk):
@@ -78,13 +103,44 @@ class CartAPIView(APIView):
 def checkout_view(request):
     cart_items = Cart.objects.filter(user=request.user)
     total_price = sum(item.product.price * item.quantity for item in cart_items)
+    total_quantity = sum(item.quantity for item in cart_items)
 
     context = {
         "cart_items": cart_items,
         "total_price": total_price,
+        "total_quantity": total_quantity,
     }
     return render(request, "cart/checkout.html", context)
 
+
+@login_required
+def update_cart_quantity(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            cart_item_id = data.get("cart_item_id")
+            quantity = int(data.get("quantity", 1))
+
+            cart_item = Cart.objects.get(id=cart_item_id, user=request.user)
+            if quantity <= 0 or quantity > cart_item.product.stock:
+                return JsonResponse({"error": "Invalid quantity or exceeds stock"}, status=400)
+            
+            cart_item.quantity = quantity
+            cart_item.save()
+
+            total_quantity = sum(item.quantity for item in Cart.objects.filter(user=request.user))
+            total_price = sum(item.product.price * item.quantity for item in Cart.objects.filter(user=request.user))
+
+            return JsonResponse({
+                "subtotal": cart_item.product.price * quantity,
+                "total_quantity": total_quantity,
+                "total_price": total_price
+            })
+
+        except Cart.DoesNotExist:
+            return JsonResponse({"error": "Cart item not found"}, status=404)
+        except ValueError:
+            return JsonResponse({"error": "Invalid quantity value"}, status=400)
 
 
 @csrf_exempt
@@ -166,9 +222,30 @@ def send_order_receipt(user_email, products, total_amount ,order_id):
     msg.send()
     print("Order receipt email sent successfully")
     
+
+def send_order_cancellation_email(user_email, products, total_amount, order_id):
+    subject = 'Your Order Cancellation Confirmation'
+    from_email = settings.EMAIL_HOST_USER
+    to = [user_email]
+    
+    context = {
+        'cart_items': products,
+        'order_total': total_amount,
+        'current_year': datetime.now().year,
+        'order_id': order_id
+    }
+    
+    html_content = render_to_string('cart/order_cancellation.html', context)
+    text_content = f"Your order with ID {order_id} has been successfully cancelled. Total amount: ${total_amount}."
+    
+    msg = EmailMultiAlternatives(subject, text_content, from_email, to)
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
+    print("Order cancellation confirmation email sent successfully")
+
+
 @csrf_exempt
 def stripe_webhook(request):
-
     print("we are in stripe webhook")
 
     payload = request.body
@@ -222,15 +299,24 @@ def stripe_webhook(request):
                 products.append({
                     "name": item.product.name,
                     "quantity": item.quantity,
-                    "price": float(item.product.price)  
+                    "price": float(item.product.price)
                 })
-                total_amount += float(item.product.price) * item.quantity  
+                total_amount += float(item.product.price) * item.quantity
+
+                if item.product.stock >= item.quantity:
+                    item.product.stock -= item.quantity
+                    item.product.save()
+                    print(f"Stock updated for product {item.product.name}, new stock: {item.product.stock}")
+                else:
+                    print(f"Insufficient stock for product {item.product.name}")
+                    return HttpResponseBadRequest(f"Insufficient stock for product {item.product.name}")
+
             print(f"user: {user}")
             print(f"products: {products}")
             print(f"total_amount: {total_amount}")
             print(f"stripe_session_id: {session['id']}")
 
-            order =OrderDone.objects.create(
+            order = OrderDone.objects.create(
                 user=user,
                 products=products,
                 total_amount=total_amount,
@@ -247,12 +333,12 @@ def stripe_webhook(request):
             print(f"intent: {payment_intent_id}")
 
             try:
-                send_order_receipt(user.email, products, total_amount ,order_id)
+                send_order_receipt(user.email, products, total_amount, order_id)
                 print("Email sent successfully")
             except Exception as email_error:
                 print(f"Failed to send email: {email_error}")
                 return HttpResponseBadRequest("Failed to send order email")
-            
+
             cart_items.delete()
 
             print(f"Order saved and cart cleared for user {user.username}")
@@ -265,17 +351,25 @@ def stripe_webhook(request):
         print("Webhook Triggered: charge.refunded or charge.refund.updated")
 
         charge = event['data']['object']
-        payment_intent_id = charge.get('payment_intent')  
+        payment_intent_id = charge.get('payment_intent')
 
         print(f"Refund event received for Payment Intent: {payment_intent_id}")
 
         try:
             order = OrderDone.objects.get(intent=payment_intent_id)
-            order.refund_status = "Refunded"
-            order.is_refunded = True 
+            order_id = order.order_id
 
+            order.refund_status = "Refunded"
+            order.is_refunded = True
             order.save()
-            print(f"Refund status updated for order {order.id}")
+            print(f"Refund status updated for order {order_id}")
+
+            try:
+                send_order_cancellation_email(order.user.email, order.products, order.total_amount, order_id)
+                print("Cancellation confirmation email sent successfully")
+            except Exception as email_error:
+                print(f"Failed to send cancellation email: {email_error}")
+                return HttpResponseBadRequest("Failed to send cancellation email")
         except OrderDone.DoesNotExist:
             print(f"No order found for intent {payment_intent_id}")
 

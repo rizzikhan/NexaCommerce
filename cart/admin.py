@@ -8,7 +8,6 @@ class CartAdmin(admin.ModelAdmin):
     search_fields = ('user__username', 'product__name')
     ordering = ('-added_at',)
     readonly_fields = ('added_at',)
-
     actions = ['clear_cart']
 
     def clear_cart(self, request, queryset):
