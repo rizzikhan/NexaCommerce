@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from cloudinary.models import CloudinaryField
 from django.core.exceptions import ValidationError
+from django.urls import reverse
 
 
 def validate_positive(value):
@@ -37,6 +38,10 @@ class Product(models.Model):
     
     def __str__(self):
         return self.name
+    
+
+    def get_absolute_url(self):
+        return reverse('display:detailedpage', args=[str(self.id)])
     
 
 

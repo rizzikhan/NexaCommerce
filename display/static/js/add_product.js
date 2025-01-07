@@ -3,12 +3,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const addProductModal = document.getElementById("addProductModal");
     const closeAddProductModal = document.getElementById("closeAddProductModal");
     const addProductForm = document.getElementById("addProductForm");
-    const merchantProductsContainer = document.getElementById("merchantProducts");
     const categoryDropdown = document.getElementById("productCategory");
     addProductButton.addEventListener("click", () => {
         addProductModal.classList.remove("hidden");
-        setTimeout(fetchCategories, 100); 
-    });
+        fetchCategories()
+        });
 
     closeAddProductModal.addEventListener("click", () => {
         addProductModal.classList.add("hidden");

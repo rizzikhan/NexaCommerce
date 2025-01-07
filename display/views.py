@@ -12,6 +12,7 @@ from django.http import JsonResponse
 from django.shortcuts import render 
 from django.http import JsonResponse
 from django.core.mail import send_mail
+from django.contrib.sites.shortcuts import get_current_site
 
 
 # for displaying display of all products and merchant products 
@@ -19,7 +20,11 @@ def display(request):
     products = Product.objects.all()
     print(products)
     print("Fetching products in display")
-
+    
+    current_site = get_current_site(request)
+    protocol = 'https' if request.is_secure() else 'http'
+    start_url = f'{protocol}://{current_site.domain}'
+    
     if request.user.is_authenticated:
         user_watchlist = Watchlist.objects.filter(user=request.user).values_list('product_id', flat=True)
     else:
@@ -40,6 +45,7 @@ def display(request):
     else:
         return render(request, 'display/index.html', {
         'products': products,
+        'start_url': start_url
     })
 
 
@@ -224,17 +230,28 @@ def get_watchlist(request):
 
 def detailedpage(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    comments = product.comments.all()  
+    comments = product.comments.all()
+    
+    # Generate absolute URL for sharing
+    current_site = get_current_site(request)
+    protocol = 'https' if request.is_secure() else 'http'
+    absolute_url = f'{protocol}://{current_site.domain}{product.get_absolute_url()}'
+    
     if request.method == "POST":
         comment_text = request.POST.get("comment")
         rating = request.POST.get("rating", 0)
         if comment_text and rating:
             Comment.objects.create(user=request.user, product=product, comment_text=comment_text, rating=rating)
 
-    return render(request, 'display/detailpage.html', {
+    print(f"absolute_url{absolute_url}")
+
+    context = {
         'product': product,
         'comments': comments,
-    })
+        'absolute_url': absolute_url,
+    }
+    
+    return render(request, 'display/detailpage.html', context)
 
 
 def load_comments(request, pk):
@@ -309,4 +326,7 @@ def about_us(request):
 
 
 
+def product_detail_url(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    return render(request, 'product_detail.html', {'product': product})
 

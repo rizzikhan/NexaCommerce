@@ -1,8 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const updateProductForm = document.getElementById("updateProductForm");
   const updateModal = document.getElementById("updateModal");
   const closeUpdateModal = document.getElementById("closeUpdateModal");
-  const merchantProductsContainer = document.getElementById("merchantProductsContainer");
 
   document.addEventListener("click", (event) => {
       if (event.target.classList.contains("update-product")) {

@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const productId = productIdElement.getAttribute("data-product-id");
-    console.log("Product ID:", productId);
 
     function loadComments() {
         fetch(`/products/${productId}/comments/`)
