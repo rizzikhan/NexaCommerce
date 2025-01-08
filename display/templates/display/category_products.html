@@ -23,9 +23,9 @@
   
     <div id="productContainer" class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-6 ml-5 mr-5">
       {% for product in products %}
-        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <div class="product-card bg-purple-100 shadow-md rounded-lg outline-none overflow-hidden">
           {% if product.image %}
-            <a href="{% url 'display:detailedpage' product.id %}" class="block">
+            <a href="{% url 'display:detailedpage' product.id %}" class="block rounded-lg outline-none ">
               {% cloudinary product.image format="jpg" crop="fill" alt=product.name %}
             </a>
           {% else %}
@@ -35,16 +35,16 @@
           {% endif %}
   
           <div class="p-4">
-            <a href="{% url 'display:detailedpage' product.id %}" class="block text-lg font-semibold text-gray-800 hover:text-blue-500">
+            <a href="{% url 'display:detailedpage' product.id %}" class="block bg-purple-200 rounded text-lg font-semibold text-black-300">
               {{ product.name }}
             </a>
-            <p class="text-gray-500 text-sm">
+            <p class="text-gray-500 text-sm bg-purple-100 rounded">
               {{ product.description|truncatechars:25 }}
             </p>
-            <p class="text-blue-500 font-bold text-lg">${{ product.price }}</p>
+            <p class="text-blue-500 font-bold text-lg bg-purple-100 rounded">${{ product.price }}</p>
   
             <!-- Category Display -->
-            <p class="text-sm text-green-600 font-medium mt-1">
+            <p class="text-sm text-black-100 font-medium mt-1 bg-purple-100 rounded">
               Category: 
               {% if product.category %}
                 {{ product.category.name }}
@@ -54,25 +54,51 @@
             </p>
   
             {% if product.stock > 0 %}
-              <p class="text-green-500 text-sm mt-1">
+              <p class="text-green-500 text-sm mt-1 bg-purple-100 rounded">
                 In Stock ({{ product.stock }} available)
               </p>
               {% if user.is_authenticated %}
-              <div class="flex items-center mt-2 gap-1">
+              <div class="flex items-center gap-1">
                 <input
                   type="number"
-                  class="border px-2 py-1 rounded w-16 quantity-input"
+                  class="border bg-purple-200 px-2 py-1 rounded w-14 quantity-input"
                   data-product-id="{{ product.id }}"
                   min="1"
                   max="{{ product.stock }}"
                   value="1"
                 />
                 <button
-                  class="add-to-cart bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 ml-2"
+                  class="add-to-cart bg-purple-200 text-white px-2 py-2 rounded hover:bg-purple-400 "
                   data-product-id="{{ product.id }}"
                 >
-                  Add to Cart
-                </button>
+                <svg 
+                width="20" 
+                height="20" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <!-- Cart Body -->
+                <path 
+                    d="M3 3H5L6.68 14.39C6.78 15.17 7.48 15.75 8.27 15.75H19.33C20.12 15.75 20.82 15.17 20.92 14.39L22 6H6" 
+                    stroke="#6B21A8" 
+                    stroke-width="2" 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round"
+                />
+                
+                <!-- Cart Wheels -->
+                <circle cx="9" cy="20" r="1" fill="#6B21A8"/>
+                <circle cx="17" cy="20" r="1" fill="#6B21A8"/>
+            
+                <path 
+                    d="M12 8V12M10 10H14" 
+                    stroke="#6B21A8" 
+                    stroke-width="2" 
+                    stroke-linecap="round"
+                />
+            </svg>                
+          </button>
                 <button
                   class="watchlist-toggle"
                   data-product-id="{{ product.id }}"

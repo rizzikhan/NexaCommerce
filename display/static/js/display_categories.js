@@ -21,12 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 categories.forEach(category => {
                     const categoryItem = document.createElement('div');
-                    categoryItem.className = 'flex flex-col items-center text-center';
+                    categoryItem.className = 'flex flex-col items-center text-center  ';
 
                     categoryItem.innerHTML = `
                         <a href="/category/${category.id}/" 
-                           class="w-24 h-24 flex items-center justify-center rounded-full bg-yellow-200 hover:bg-yellow-300 shadow-md transition duration-300">
-                            <span class="text-gray-800 font-semibold">${category.name}</span>
+                           class="w-24 h-24 flex items-center justify-center shadow-md rounded-full bg-purple-200 hover:bg-purple-400 shadow-md transition duration-300">
+                            
+                           <span class="text-gray-800 font-semibold">${category.name}</span>
                         </a>
                         <span class="text-sm mt-2">${category.name}</span>
                     `;

@@ -20,13 +20,14 @@
 
     {% endblock %}
 </head>
-<body class="bg-gray-100">
-  <div class="flex items-center justify-between bg-white shadow-md px-6 py-3 sticky top-0 z-50">
-    <div class="flex-shrink-0">
+<body class="bg-purple-100">
+  <div class="flex items-center justify-between bg-purple-300 rounded shadow-md px-2 py-1 sticky top-0 z-50">
+    <div class="flex-shrink-0 ml-2">
       <a href="{% url 'display:display' %}">
         {% cloudinary 'logo' format="png" crop="fill" alt="Piecyfer Logo" class="h-10 w-22" %}
       </a>
     </div>
+    
     <div class="flex items-center space-x-4">
       {% if user.role == 'normal' %}
         <div class="flex-grow flex justify-center">
@@ -35,111 +36,222 @@
               type="text"
               id="searchBar"
               placeholder="Search products..."
-              class="w-64 border border-gray-300 rounded-l-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
+              class="w-64 border text-black bg-purple-200 border-gray-300 rounded-l-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
             />
             <button
               type="submit"
-              class="bg-yellow-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600"
+              class="bg-purple-200 text-black px-4 py-2 rounded hover:bg-purple-400"
             >
               Search
             </button>
           </form>
         </div>
       {% endif %}
-  
-      <a href="{% url 'display:display' %}" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
+
+  <div class="inline-flex ml-2 mr-8 gap-2">
+      <a href="{% url 'display:display' %}" class=" bg-purple-200 text-black px-4 py-2 rounded hover:bg-purple-400">
         Home
       </a>
-      <a href="{% url 'chatbot:chatbot' %}" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
-        Help
-      </a>
-      <a href="{% url 'display:about_us' %}" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">About Us</a>
+      <a href="{% url 'chatbot:chatbot' %}" class="bg-purple-200 text-black px-4 py-2 rounded hover:bg-purple-400">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-robot" viewBox="0 0 16 16">
+  <path d="M6 12.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5M3 8.062C3 6.76 4.235 5.765 5.53 5.886a26.6 26.6 0 0 0 4.94 0C11.765 5.765 13 6.76 13 8.062v1.157a.93.93 0 0 1-.765.935c-.845.147-2.34.346-4.235.346s-3.39-.2-4.235-.346A.93.93 0 0 1 3 9.219zm4.542-.827a.25.25 0 0 0-.217.068l-.92.9a25 25 0 0 1-1.871-.183.25.25 0 0 0-.068.495c.55.076 1.232.149 2.02.193a.25.25 0 0 0 .189-.071l.754-.736.847 1.71a.25.25 0 0 0 .404.062l.932-.97a25 25 0 0 0 1.922-.188.25.25 0 0 0-.068-.495c-.538.074-1.207.145-1.98.189a.25.25 0 0 0-.166.076l-.754.785-.842-1.7a.25.25 0 0 0-.182-.135"/>
+  <path d="M8.5 1.866a1 1 0 1 0-1 0V3h-2A4.5 4.5 0 0 0 1 7.5V8a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1v1a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1v-.5A4.5 4.5 0 0 0 10.5 3h-2zM14 7.5V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7.5A3.5 3.5 0 0 1 5.5 4h5A3.5 3.5 0 0 1 14 7.5"/>
+</svg>      </a>
+      <a href="{% url 'display:about_us' %}" class="bg-purple-200 text-black px-4 py-2 rounded hover:bg-purple-400">About Us</a>
       {% if user.role == 'normal' %}
 
-<div class="relative">
+<div class="relative mr-24">
     <button
         id="categoriesButton"
-        class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 focus:outline-none"
+        class="bg-purple-200 text-black px-4 py-2 rounded hover:bg-purple-400"
     >
         Categories
     </button>
     <div
         id="categoryDropdown"
-        class="hidden absolute bg-white shadow-lg rounded-lg mt-2 w-48 z-50"
+        class="hidden absolute bg-purple-100 shadow-lg rounded-lg mt-2 w-48 z-58"
     >
-        <ul id="categoryList" class="py-2">
+        <ul id="categoryList" class="py-2 hover:bg-purple-200">
             <li class="px-4 py-2 text-gray-500">Loading...</li>
         </ul>
     </div>
 </div>
+</div>
 {% endif %}
+</div>
+    
+    
+  <!--  -->
 
-    
-    
-  
       {% if user.is_authenticated %}
         {% if user.role == 'merchant' %}
           <button
             id="addProductButton"
-            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            class="bg-purple-200 text-black px-4 py-2 rounded hover:bg-purple-400"
           >
             Add Product
           </button>
           <button
             id="profileButton"
-            class="bg-green-100 text-gray-800 px-4 py-2 rounded hover:bg-gray-200"
+            class="bg-purple-200 text-black px-4 py-2 rounded hover:bg-purple-400"
           >
-            Profile
-          </button>
+          <svg 
+    width="28" 
+    height="24" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Profile Circle -->
+    <circle 
+        cx="12" 
+        cy="8" 
+        r="4" 
+        stroke="#6B21A8" 
+        stroke-width="2"
+    />
+    
+    <!-- Body -->
+    <path 
+        d="M4 20C4 16.6863 7.13401 14 12 14C16.866 14 20 16.6863 20 20" 
+        stroke="#6B21A8" 
+        stroke-width="2" 
+        stroke-linecap="round"
+    />
+</svg>          </button>
           <a
             href="{% url 'userauth:logout' %}"
-            class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            class="bg-red-100 text-black px-4 py-2 rounded hover:bg-purple-400"
           >
             Logout
           </a>
         {% elif user.role == 'normal' %}
           <button
             id="profileButton"
-            class="bg-green-100 text-gray-800 px-4 py-2 rounded hover:bg-gray-200"
+            class="bg-purple-200 text-black px-4 py-2 rounded hover:bg-purple-400"
           >
-            Profile
+          <svg 
+    width="28" 
+    height="24" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Profile Circle -->
+    <circle 
+        cx="12" 
+        cy="8" 
+        r="4" 
+        stroke="#6B21A8" 
+        stroke-width="2"
+    />
+    
+    <!-- Body -->
+    <path 
+        d="M4 20C4 16.6863 7.13401 14 12 14C16.866 14 20 16.6863 20 20" 
+        stroke="#6B21A8" 
+        stroke-width="2" 
+        stroke-linecap="round"
+    />
+</svg>
+
           </button>
           <button
             id="ordersButton"
-            class="bg-amber-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-200"
+            class="bg-purple-200 text-black px-4 py-2 rounded hover:bg-purple-400"
           >
-            Orders
+          <svg 
+    width="32" 
+    height="24" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Document Outline -->
+    <path 
+        d="M8 3H16C17.1 3 18 3.9 18 5V19C18 20.1 17.1 21 16 21H8C6.9 21 6 20.1 6 19V5C6 3.9 6.9 3 8 3Z" 
+        stroke="#6B21A8" 
+        stroke-width="2" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"
+    />
+    
+    <!-- Checklist Lines -->
+    <path 
+        d="M9 7H15" 
+        stroke="#6B21A8" 
+        stroke-width="2" 
+        stroke-linecap="round"
+    />
+    <path 
+        d="M9 11H13" 
+        stroke="#6B21A8" 
+        stroke-width="2" 
+        stroke-linecap="round"
+    />
+    <path 
+        d="M9 15H12" 
+        stroke="#6B21A8" 
+        stroke-width="2" 
+        stroke-linecap="round"
+    />
+    
+    <!-- Clock Icon Inside the Document -->
+    <circle 
+        cx="12" 
+        cy="18" 
+        r="2.5" 
+        stroke="#6B21A8" 
+        stroke-width="2"
+    />
+    <path 
+        d="M12 17V18.5L13 19" 
+        stroke="#6B21A8" 
+        stroke-width="2" 
+        stroke-linecap="round"
+    />
+</svg>
+
           </button>
           <a
             id="cartButton"
-            class="bg-blue-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-200 cursor-pointer"
+            class="bg-purple-200 text-black px-4 py-2 rounded hover:bg-purple-400 cursor-pointer"
           >
-            Cart
+          <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          width="32" 
+          height="26" 
+          viewBox="0 0 24 24"
+          class="fill-purple-500 hover:fill-purple-800 transition"
+      >
+          <path d="M10 19.5c0 .829-.672 1.5-1.5 1.5s-1.5-.671-1.5-1.5c0-.828.672-1.5 1.5-1.5s1.5.672 1.5 1.5zm3.5-1.5c-.828 0-1.5.671-1.5 1.5s.672 1.5 1.5 1.5 1.5-.671 1.5-1.5c0-.828-.672-1.5-1.5-1.5zm1.336-5l1.977-7h-16.813l2.938 7h11.898zm4.969-10l-3.432 12h-12.597l.839 2h13.239l3.474-12h1.929l.743-2h-4.195z"/>
+      </svg>
+                  
           </a>
           <a
             href="{% url 'userauth:logout' %}"
-            class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            class="bg-red-200 text-black px-4 py-2 rounded hover:bg-purple-400"
           >
             Logout
           </a>
         {% endif %}
       {% else %}
-        <a href="{% url 'userauth:login' %}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        <a href="{% url 'userauth:login' %}" class="bg-red-200 text-black px-4 py-2 rounded hover:bg-purple-400">
           Sign In
         </a>
-        <a href="{% url 'userauth:signup' %}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        <a href="{% url 'userauth:signup' %}" class="bg-red-200 text-black px-4 py-2 rounded hover:bg-purple-400">
           Sign Up
         </a>
       {% endif %}
     </div>
   </div>
 
-    <div class="container mx-auto px-4 py-8">
+
+
         {% block content %}
 
 
         {% endblock %}
-    </div>
 
     {% block modals %}
 <!-- delete confirmation modal -->
@@ -176,238 +288,339 @@ class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center 
 </div>
 
 
-    <!-- cart modal -->
+<!-- Cart Modal -->
 <div
-  id="cartModal"
-  class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden z-50"
+    id="cartModal"
+    class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
 >
-  <div class="bg-white rounded-lg p-6 w-[800px] shadow-lg relative"> 
-    <button
-      id="closeCartModal"
-      class="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-xl"
-    >
-      &times;
-    </button>
-    <h2 class="text-xl font-bold mb-4">Your Cart</h2>
-    <div id="cartItems" class="max-h-60 overflow-y-auto"></div> 
-    <div class="mt-4 mr-4 flex justify-end">
-      <a
-        href="{% url 'cart:checkout' %}"
-        class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600"
-      >
-        Proceed to Checkout
-      </a>
+    <div class="bg-white rounded-xl shadow-xl overflow-hidden w-full max-w-3xl md:w-3/4 lg:w-1/2 max-h-[90vh] overflow-y-auto relative">
+        <!-- Modal Header -->
+        <div class="bg-gradient-to-r from-purple-50 to-white p-6 border-b border-purple-100">
+            <h2 class="text-2xl font-bold text-purple-900">Your Cart</h2>
+            <button
+                id="closeCartModal"
+                class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl transition-colors"
+            >
+                &times;
+            </button>
+        </div>
+
+        <!-- Cart Items Section -->
+        <div id="cartItems" class="p-6 space-y-4 max-h-[60vh] overflow-y-auto bg-gray-50 rounded-md">
+            <!-- Example Cart Item (Dynamic Content will Replace This) -->
+            <div class="bg-white border border-purple-100 rounded-md shadow-sm p-4 hover:shadow-md transition">
+                <div class="flex items-center gap-4">
+                    <img
+                        src="https://via.placeholder.com/80"
+                        alt="Product Name"
+                        class="h-20 w-20 object-cover rounded-md"
+                    />
+                    <div class="flex-1">
+                        <h3 class="text-lg font-semibold text-purple-900">Product Name</h3>
+                        <p class="text-sm text-gray-600">Unit Price: <span class="text-purple-600">$25.00</span></p>
+                        <p class="text-sm text-gray-600">Quantity: <span class="text-purple-600">2</span></p>
+                    </div>
+                    <div class="text-lg font-bold text-purple-900">
+                        $50.00
+                    </div>
+                    <button
+                        class="text-red-500 hover:text-red-600 text-sm"
+                    >
+                        Remove
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Section -->
+        <div class="p-6 border-t border-purple-100 bg-gray-50">
+            <div class="flex justify-between items-center">
+                <a
+                    href="{% url 'cart:checkout' %}"
+                    class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition"
+                >
+                    Proceed to Checkout
+                </a>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
     <!-- profile modal -->
-     <div
-     id="profileModal"
-     class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden z-50"
-   >
-     <div class="bg-white rounded-lg p-6 w-1/2 h-3/4 shadow-lg relative overflow-y-auto">
-       <button
-         id="closeModal"
-         class="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-xl"
-       >
-         &times;
-       </button>
-   
-       <!-- profile header -->
-       <h2 class="text-xl font-bold mb-4">User Profile</h2>
-       <div id="userData" class="mb-4">
-         <p><strong>Username:</strong> {{ user.username }}</p>
-         <p><strong>Email:</strong> {{ user.email }}</p>
-         <p><strong>Phone:</strong> {{ user.phone }}</p>
-         <p><strong>Role:</strong> {{ user.role }}</p>
-       </div>
-   
-       <!-- watchlist section -->
-       <div class="bg-white rounded-lg shadow-lg w-full p-4 mt-4">
-         <h2 class="text-lg font-bold mb-2">Your Watchlist</h2>
-         <div
-           id="watchlistContainer"
-           class="space-y-4 max-h-96 overflow-y-auto border rounded-md p-4"
-         >
-         </div>
-       </div>
-          <button
-         id="closeModalButton"
-         class="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-       >
-         Close
-       </button>
-     </div>
-   </div>
-
-<!-- add product modal -->
 <div
-id="addProductModal"
-class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden z-50"
+id="profileModal"
+class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50"
 >
-<div class="bg-white rounded-lg p-6 w-96 shadow-lg relative">
-  <button
-    id="closeAddProductModal"
-    class="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-xl"
-  > 
-    &times;
-  </button>
-  <h2 class="text-xl font-bold mb-4">Add New Product</h2>
-
-  <!-- add product form -->
-  <form id="addProductForm" class="space-y-4">
-    <div>
-      <label for="productName" class="block text-gray-700 font-medium"
-        >Product Name</label
-      >
-      <input
-        type="text"
-        id="productName"
-        name="name"
-        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        required
-      />
-    </div>
-    <div>
-      <label for="productDescription" class="block text-gray-700 font-medium"
-        >Description</label
-      >
-      <textarea
-        id="productDescription"
-        name="description"
-        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        required
-      ></textarea>
-    </div>
-
-
-    <div>
-      <label for="productPrice" class="block text-gray-700 font-medium"
-        >Price</label
-      >
-      <input
-        type="number"
-        id="productPrice"
-        name="price"
-        min="1"
-        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        required
-      />
-    </div>
-    <div>
-      <label for="productStock" class="block text-gray-700 font-medium"
-        >Stock</label
-      >
-      <input
-        type="number"
-        id="productStock"
-        name="stock"
-        min="1"
-        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        required
-      />
-    </div>
-    
-    <div>
-      <label for="productCategory" class="block text-gray-700 font-medium">Category</label>
-      <select
-        id="productCategory"
-        name="category"
-        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        required
-      >
-        <option value="" disabled selected>Select a Category</option>
-      </select>
-    </div>
-    <div>
-      <label for="productImage" class="block text-gray-700 font-medium"
-        >Image</label
-      >
-      <input
-        type="file"
-        id="productImage"
-        name="image"
-        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        required
-      />
-    </div>
+<div class="bg-white rounded-xl shadow-xl overflow-hidden w-full max-w-3xl md:w-3/4 lg:w-1/2 max-h-[90vh] overflow-y-auto relative">
+    <!-- Close Button -->
     <button
-      type="submit"
-      class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full"
+        id="closeModal"
+        class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl transition-colors"
     >
-      Add Product
+        &times;
     </button>
-  </form>
+
+    <!-- Profile Header -->
+    <div class="bg-gradient-to-r from-purple-50 to-white p-6 border-b border-purple-100">
+        <h2 class="text-2xl font-bold text-purple-900">User Profile</h2>
+    </div>
+
+    <!-- Profile Details Section -->
+    <div class="p-6 space-y-4">
+        <div class="bg-purple-50 rounded-md p-4 shadow-sm">
+            <p><strong class="text-purple-700">Username:</strong> <span class="text-gray-700">{{ user.username }}</span></p>
+            <p><strong class="text-purple-700">Email:</strong> <span class="text-gray-700">{{ user.email }}</span></p>
+            <p><strong class="text-purple-700">Phone:</strong> <span class="text-gray-700">{{ user.phone }}</span></p>
+            <p><strong class="text-purple-700">Role:</strong> <span class="text-gray-700">{{ user.role }}</span></p>
+        </div>
+    </div>
+
+    <!-- Watchlist Section -->
+    <div class="p-6">
+        <h3 class="text-lg font-semibold text-purple-900 mb-4">Your Watchlist</h3>
+        <div
+            id="watchlistContainer"
+            class="space-y-4 bg-gray-50 border border-purple-100 rounded-md p-4 shadow-inner max-h-60 overflow-y-auto"
+        >
+            <p class="text-gray-500 text-center">Your watchlist is empty.</p>
+        </div>
+    </div>
+
+    <!-- Footer Buttons -->
+    <div class="p-6 border-t border-purple-100 flex justify-end gap-4 bg-gray-50">
+        <button
+            id="closeModalButton"
+            class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition"
+        >
+            Cancel
+        </button>
+
+    </div>
 </div>
 </div>
-
-
-<!-- update modal -->
+<!-- Add Product Modal -->
 <div
-  id="updateModal"
+  id="addProductModal"
   class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden z-50"
 >
-  <div class="bg-white rounded-lg p-6 w-96 shadow-lg relative">
+  <div class="bg-purple-200 rounded-lg p-6 w-96 shadow-2xl relative text-white">
+    <!-- Close Button -->
     <button
-      id="closeUpdateModal"
-      class="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-xl"
+      id="closeAddProductModal"
+      class="absolute top-2 right-2 text-white hover:text-red-400 text-2xl"
     >
       &times;
     </button>
-    <h2 class="text-xl font-bold mb-4">Update Product</h2>
-    <form id="updateProductForm">
-      <div class="mb-4">
-        <label for="updateProductName" class="block text-sm font-medium">Name</label>
+
+    <!-- Modal Title -->
+    <h2 class="text-2xl font-bold mb-4 text-center text-black">Add New Product</h2>
+
+    <!-- Add Product Form -->
+    <form id="addProductForm" class="space-y-4">
+      <!-- Product Name -->
+      <div>
+        <label for="productName" class="block font-medium mb-1 text-black">Product Name</label>
         <input
           type="text"
-          id="updateProductName"
-          class="w-full px-3 py-2 border rounded"
+          id="productName"
+          name="name"
+          class="w-full px-4 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          required
         />
       </div>
-      <div class="mb-4">
-        <label for="updateProductPrice" class="block text-sm font-medium">Price</label>
-        <input
-          type="number"
-          id="updateProductPrice"
-          class="w-full px-3 py-2 border rounded"
-          min="1"
-          step = "1"
-        />
-      </div>
-      <div class="mb-4">
-        <label for="updateProductDescription" class="block text-sm font-medium">Description</label>
+
+      <!-- Description -->
+      <div>
+        <label for="productDescription" class="block font-medium mb-1 text-black">Description</label>
         <textarea
-          id="updateProductDescription"
-          class="w-full px-3 py-2 border rounded"
+          id="productDescription"
+          name="description"
+          class="w-full px-4 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          required
         ></textarea>
       </div>
+
+      <!-- Price -->
+      <div>
+        <label for="productPrice" class="block font-medium mb-1 text-black">Price</label>
+        <input
+          type="number"
+          id="productPrice"
+          name="price"
+          min="1"
+          class="w-full px-4 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          required
+        />
+      </div>
+
+      <!-- Stock -->
+      <div>
+        <label for="productStock" class="block font-medium mb-1 text-black">Stock</label>
+        <input
+          type="number"
+          id="productStock"
+          name="stock"
+          min="1"
+          class="w-full px-4 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          required
+        />
+      </div>
+
+      <!-- Category -->
+      <div>
+        <label for="productCategory" class="block font-medium mb-1 text-black">Category</label>
+        <select
+          id="productCategory"
+          name="category"
+          class="w-full px-4 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          required
+        >
+          <option value="" disabled selected>Select a Category</option>
+        </select>
+      </div>
+
+      <!-- Image Upload -->
+      <div>
+        <label for="productImage" class="block font-medium mb-1 text-black">Image</label>
+        <input
+          type="file"
+          id="productImage"
+          name="image"
+          class="w-full px-4 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          required
+        />
+      </div>
+
+      <!-- Submit Button -->
       <button
-        type="button"
-        id="saveProductChanges"
-        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        type="submit"
+        class="bg-purple-400 text-white px-4 py-2 rounded-lg hover:bg-purple-600 flex items-center justify-center w-full"
       >
-        Save Changes
+        Add Product
       </button>
     </form>
   </div>
 </div>
 
 
-<!-- orders modal -->
+<!-- Update Modal -->
 <div
-  id="ordersModal"
-  class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+  id="updateModal"
+  class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden z-50"
 >
+  <div class="bg-purple-200 rounded-lg p-6 w-96 shadow-2xl relative text-white">
+    <!-- Close Button -->
+    <button
+      id="closeUpdateModal"
+      class="absolute top-2 right-2 text-white hover:text-red-400 text-2xl"
+    >
+      &times;
+    </button>
 
-  <div class="bg-white rounded-lg shadow-lg w-full max-w-xl max-h-[90vh] overflow-y-auto p-6">
-    <h2 class="text-2xl font-bold mb-4">Your Orders</h2>
+    <!-- Modal Title -->
+    <h2 class="text-2xl font-bold mb-4 text-center text-black">Update Product</h2>
 
-    <div id="ordersList" class="space-y-4">
+    <!-- Update Product Form -->
+    <form id="updateProductForm" class="space-y-4">
+      <!-- Product Name -->
+      <div>
+        <label for="updateProductName" class="block font-medium mb-1 text-black">Product Name</label>
+        <input
+          type="text"
+          id="updateProductName"
+          name="name"
+          class="w-full px-4 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          required
+        />
+      </div>
 
+      <!-- Product Price -->
+      <div>
+        <label for="updateProductPrice" class="block font-medium mb-1 text-black">Price</label>
+        <input
+          type="number"
+          id="updateProductPrice"
+          name="price"
+          min="1"
+          step="1"
+          class="w-full px-4 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          required
+        />
+      </div>
 
-    </div>
+      <!-- Product Description -->
+      <div>
+        <label for="updateProductDescription" class="block font-medium mb-1 text-black">Description</label>
+        <textarea
+          id="updateProductDescription"
+          name="description"
+          rows="3"
+          class="w-full px-4 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          required
+        ></textarea>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex justify-between gap-2">
+        <button
+          type="button"
+          id="cancelUpdate"
+          class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400 flex-1"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          id="saveProductChanges"
+          class="bg-purple-400 text-white px-4 py-2 rounded-lg hover:bg-purple-600 flex-1"
+        >
+          Save Changes
+        </button>
+      </div>
+    </form>
   </div>
+</div>
+
+<!-- Orders Modal -->
+<div
+    id="ordersModal"
+    class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+>
+    <div class="bg-white rounded-xl shadow-xl overflow-hidden w-full max-w-3xl md:w-3/4 lg:w-1/2 max-h-[90vh] overflow-y-auto relative">
+        <!-- Modal Header -->
+        <div class="bg-gradient-to-r from-purple-50 to-white p-6 border-b border-purple-100">
+            <h2 class="text-2xl font-bold text-purple-900">Your Orders</h2>
+            <button
+                id="closeOrdersModal"
+                class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl transition-colors"
+            >
+                &times;
+            </button>
+        </div>
+
+        <!-- Orders List -->
+        <div id="ordersList" class="p-6 space-y-4 max-h-[60vh] overflow-y-auto bg-gray-50 rounded-md">
+            <!-- Example Order Item (Dynamic Content will Replace This) -->
+            <div class="bg-white border border-purple-100 rounded-md shadow-sm p-4 hover:shadow-md transition">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <!-- Order Info -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-purple-900">Order #12345</h3>
+                        <p class="text-sm text-gray-600">Placed on: <span class="text-purple-600">Jan 15, 2024</span></p>
+                        <p class="text-sm text-gray-600">Total: <span class="text-purple-600">$250.00</span></p>
+                    </div>
+                    <!-- Order Status -->
+                    <div class="flex items-center gap-2">
+                        <span class="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-600">Completed</span>
+                        <button class="text-sm text-blue-600 hover:underline">View Details</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        </div>
+    </div>
 </div>
 
     {% endblock %}
@@ -432,7 +645,7 @@ class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center 
     
     
 <!-- footer-->
-<footer class="bg-gray-900 text-gray-300 py-8 mt-auto">
+<footer class="bg-purple-300 text-black-300 shadow-md py-8 mt-auto">
   <div class="container mx-auto px-4">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       <div>
@@ -469,7 +682,7 @@ class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center 
       </div>
     </div>
     
-    <hr class="my-8 border-gray-700">
+    <hr class="my-6 border-gray-700">
     
     <div class="text-center text-sm">
       <p>&copy; 2024 Piecyfer. All rights reserved.</p>

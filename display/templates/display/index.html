@@ -6,12 +6,9 @@
 
 {% block content %}
 {% if user.role == 'normal' %}
-
 <!-- categories  -->
 <div class="container mx-auto px-4 py-8">
-  <h2 class="text-2xl font-bold mb-6">Categories</h2>
-  <div id="categoriesContainer" class="flex flex-wrap gap-4 justify-center items-center">
-
+  <div id="categoriesContainer" class="flex flex-wrap gap-4 justify-center  items-center">
   </div>
 </div>
 {% endif %}
@@ -21,12 +18,12 @@
 {% if user.role == 'merchant' %}
 <h2 class="text-2xl font-bold mb-6 mt-4 ml-5 mr-5">Your Products</h2>
 {% endif %}
-<div id="merchantProducts" class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-4 gap-6 ml-5 mr-5">
+<div id="merchantProducts" class="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-5 gap-3 ml-2 mr-2">
   {% if merchant_products %}
     {% for product in merchant_products %}
-      <div class="bg-white shadow-md rounded-lg overflow-hidden">
+      <div class="bg-purple-100 shadow-md rounded-lg outline-none overflow-hidden">
         {% if product.image %}
-          <a class="block">
+          <a class="block rounded-lg outline-none">
             {% cloudinary product.image format="jpg" crop="fill" alt=product.name %}
           </a>
         {% else %}
@@ -36,10 +33,10 @@
         {% endif %}
         
         <div class="p-4">
-          <h3 class="text-lg font-semibold">{{ product.name }}</h3>
-          <p class="text-gray-500 text-sm">{{ product.description }}</p>
-          <p class="text-blue-500 font-bold text-lg">${{ product.price }}</p>
-          <p class="text-sm text-green-600 font-medium mt-2">
+          <h3 class="block bg-purple-200 rounded text-lg font-semibold text-black-300">{{ product.name }}</h3>
+          <p class="text-gray-500 text-sm bg-purple-100 rounded">{{ product.description }}</p>
+          <p class="text-blue-500 font-bold text-lg bg-purple-100 rounded">${{ product.price }}</p>
+          <p class="text-sm text-black-100 font-medium mt-1 bg-purple-100 rounded">
             Category: 
             {% if product.category %}
               {{ product.category.name }}
@@ -48,13 +45,13 @@
             {% endif %}
           </p>
           <button
-            class="update-product bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mt-2"
+            class="update-product bg-purple-400 text-black px-4 py-2 rounded hover:bg-purple-400 mt-2"
             data-product-id="{{ product.id }}"
           >
             Update
           </button>
           <button
-            class="delete-product bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 mt-2"
+            class="delete-product bg-purple-400 text-black px-4 py-2 rounded hover:bg-purple-400 mt-2"
             data-product-id="{{ product.id }}"
           >
             Delete
@@ -70,45 +67,77 @@
 </div>
 {% if user.role == 'normal' %}
 
-<button id="filterButton" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center justify-center">
+<button id="filterButton" class="bg-purple-200 text-white px-4 py-2 rounded hover:bg-purple-400 flex items-center justify-center">
  
-  <img width="25" height="30" src="https://img.icons8.com/matisse/100/low-indicator-filter.png" alt="low-indicator-filter"/>
+  <svg 
+  width="28" 
+  height="28" 
+  viewBox="0 0 24 24" 
+  fill="none" 
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <!-- First Line with Circle -->
+  <circle cx="5" cy="6" r="2" fill="#6B21A8"/>
+  <line x1="9" y1="6" x2="21" y2="6" stroke="#6B21A8" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Second Line with Circle -->
+  <circle cx="19" cy="12" r="2" fill="#6B21A8"/>
+  <line x1="3" y1="12" x2="17" y2="12" stroke="#6B21A8" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Third Line with Circle -->
+  <circle cx="7" cy="18" r="2" fill="#6B21A8"/>
+  <line x1="11" y1="18" x2="21" y2="18" stroke="#6B21A8" stroke-width="2" stroke-linecap="round"/>
+</svg>
 </button>
 
 {% endif %}
 
-<div id="filterSidebar" class="fixed top-0 right-0 w-80 h-full bg-white shadow-lg hidden z-50">
-    <div class="p-4">
-        <h2 class="text-xl font-bold mb-4">Filter & Sort</h2>
-        
-        <label class="block">Category:</label>
-        <select id="categoryFilter" class="w-full mb-2"></select>
-        
-        <label class="block">Price Range:</label>
-        <input type="number" id="priceMin" placeholder="Min Price" class="w-full mb-2">
-        <input type="number" id="priceMax" placeholder="Max Price" class="w-full mb-2">
-        
-        <label class="block">Stock:</label>
-        <select id="stockFilter" class="w-full mb-2">
-            <option value="">All</option>
-            <option value="true">In Stock</option>
-        </select>
-        
-<label for="sortFilter" class="block text-sm font-medium text-gray-700">Sort By:</label>
-<select id="sortFilter" class="w-full border border-gray-300 rounded-md p-2 mb-4">
-    <option value="">Default</option>
-    <option value="price_low_high">Price: Low to High</option>
-    <option value="price_high_low">Price: High to Low</option>
-    <option value="new_to_old">Newest First</option>
-    <option value="old_to_new">Oldest First</option>
-</select>
-
-        
-        <button id="applyFilters" class="w-full bg-blue-500 text-white py-2 mb-2 rounded">Apply</button>
-        <button id="clearFilters" class="w-full bg-gray-500 text-white py-2 rounded">Clear</button>
-        <button id="closeFilterSidebar" class="w-full bg-red-500 text-white py-2 mt-4 rounded">Close</button>
-    </div>
+<div id="filterSidebar" class="fixed top-0 right-0 w-80 h-full shadow-md bg-gradient-to-b from-purple-200 to-purple-100 shadow-xl hidden z-50">
+  <div class="p-6">
+      <h2 class="text-xl font-bold text-purple-800 mb-6">Filter & Sort</h2>
+      
+      <div class="space-y-4">
+          <div>
+              <label class="block text-sm font-medium text-purple-700 mb-1">Category:</label>
+              <select id="categoryFilter" class="w-full border-2 border-purple-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-300 bg-white"></select>
+          </div>
+          
+          <div>
+              <label class="block text-sm font-medium text-purple-700 mb-1">Price Range:</label>
+              <input type="number" id="priceMin" placeholder="Min Price" 
+                  class="w-full border-2 border-purple-200 rounded-lg px-3 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-purple-300 bg-white placeholder-purple-300">
+              <input type="number" id="priceMax" placeholder="Max Price" 
+                  class="w-full border-2 border-purple-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-300 bg-white placeholder-purple-300">
+          </div>
+          
+          <div>
+              <label class="block text-sm font-medium text-purple-700 mb-1">Stock:</label>
+              <select id="stockFilter" class="w-full border-2 border-purple-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-300 bg-white">
+                  <option value="">All</option>
+                  <option value="true">In Stock</option>
+              </select>
+          </div>
+          
+          <div>
+              <label class="block text-sm font-medium text-purple-700 mb-1">Sort By:</label>
+              <select id="sortFilter" class="w-full border-2 border-purple-200 rounded-lg px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-purple-300 bg-white">
+                  <option value="">Default</option>
+                  <option value="price_low_high">Price: Low to High</option>
+                  <option value="price_high_low">Price: High to Low</option>
+                  <option value="new_to_old">Newest First</option>
+                  <option value="old_to_new">Oldest First</option>
+              </select>
+          </div>
+      </div>
+      
+      <div class="space-y-3 mt-6">
+          <button id="applyFilters" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2.5 rounded-lg transition-colors">Apply</button>
+          <button id="clearFilters" class="w-full bg-purple-200 hover:bg-purple-300 text-purple-700 py-2.5 rounded-lg transition-colors">Clear</button>
+          <button id="closeFilterSidebar" class="w-full border-2 border-purple-200 text-purple-700 hover:bg-purple-50 py-2.5 rounded-lg transition-colors">Close</button>
+      </div>
+  </div>
 </div>
+
 
 <!-- All Products -->
 {% load social_share %}
@@ -120,13 +149,13 @@
   <div id="productContainer" class="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-5 gap-3 ml-2 mr-2">
     {% for product in products %}
       <div 
-        class="product-card bg-white shadow-md rounded-lg overflow-hidden" 
+        class="product-card bg-purple-100 shadow-md rounded-lg outline-none overflow-hidden" 
         data-product-id="{{ product.id }}" 
         data-price="{{ product.price }}" 
         data-created-at="{{ product.created_at|date:'Y-m-d H:i:s' }}"
       >
         {% if product.image %}
-          <a href="{% url 'display:detailedpage' product.id %}" class="block">
+          <a href="{% url 'display:detailedpage' product.id %}" class="block rounded-lg outline-none ">
             {% cloudinary product.image format="jpg" crop="fill" alt=product.name %}
           </a>
         {% else %}
@@ -136,52 +165,78 @@
         {% endif %}
 
         <div class="p-4">
-          <a href="{% url 'display:detailedpage' product.id %}" class="block text-lg font-semibold text-gray-800 hover:text-blue-500">
+          <a href="{% url 'display:detailedpage' product.id %}" class="block bg-purple-200 rounded text-lg font-semibold text-black-300">
             {{ product.name }}
           </a>
-          <p class="text-gray-500 text-sm">
+          <p class="text-gray-500 text-sm bg-purple-100 rounded">
             {{ product.description|truncatechars:25 }}
           </p>
-          <p class="text-blue-500 font-bold text-lg">${{ product.price }}</p>
+          <p class="text-blue-500 font-bold text-lg bg-purple-100 rounded">${{ product.price }}</p>
 
-          <p class="text-sm text-green-600 font-medium mt-1">
-            Category: 
+          <p class="text-sm text-black-100 font-medium mt-1 bg-purple-100 rounded">
+             
             {% if product.category %}
-              {{ product.category.name }}
+              Category: {{ product.category.name }}
             {% else %}
               No Category
             {% endif %}
           </p>
 
           {% if product.stock > 0 %}
-            <p class="text-green-500 text-sm mt-1">
+            <p class="text-green-500 text-sm mt-1 bg-purple-100 rounded">
               In Stock ({{ product.stock }} available)
             </p>
             {% if user.is_authenticated %}
-            <div class="flex items-center mt-2 gap-1">
+            <div class="flex items-center gap-1">
               <input
                 type="number"
-                class="border px-2 py-1 rounded w-14 quantity-input"
+                class="border bg-purple-200 px-2 py-1 rounded w-14 quantity-input"
                 data-product-id="{{ product.id }}"
                 min="1"
                 max="{{ product.stock }}"
                 value="1"
               />
               <button
-                class="add-to-cart bg-blue-500 text-white px-2 py-2 rounded hover:bg-blue-600 "
+                class="add-to-cart bg-purple-200 text-white px-2 py-2 rounded hover:bg-purple-400 "
                 data-product-id="{{ product.id }}"
               >
-                Add Cart
-              </button>
+              <svg 
+              width="20" 
+              height="20" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg"
+          >
+              <!-- Cart Body -->
+              <path 
+                  d="M3 3H5L6.68 14.39C6.78 15.17 7.48 15.75 8.27 15.75H19.33C20.12 15.75 20.82 15.17 20.92 14.39L22 6H6" 
+                  stroke="#6B21A8" 
+                  stroke-width="2" 
+                  stroke-linecap="round" 
+                  stroke-linejoin="round"
+              />
+              
+              <!-- Cart Wheels -->
+              <circle cx="9" cy="20" r="1" fill="#6B21A8"/>
+              <circle cx="17" cy="20" r="1" fill="#6B21A8"/>
+          
+              <path 
+                  d="M12 8V12M10 10H14" 
+                  stroke="#6B21A8" 
+                  stroke-width="2" 
+                  stroke-linecap="round"
+              />
+          </svg>
+                        </button>
               <button
-                class="watchlist-toggle "
+                class="watchlist-toggle"
                 data-product-id="{{ product.id }}"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="h-8 w-8 transition-colors duration-300 {% if product.in_watchlist %}text-red-500{% else %}text-gray-500{% endif %}"
                   fill="none"
-                  viewBox="0 0 24 24"
+                  viewBox="0 0 28 28"
                   stroke="currentColor"
                   stroke-width="3"
                 >
@@ -248,16 +303,11 @@
             <div class="mt-4">
             <a
               href="{% url 'userauth:login' %}"
-              class="bg-blue-500 text-white px-4 py-2 mr-4 rounded hover:bg-blue-600"
+              class="bg-purple-200 text-black px-4 py-2 rounded hover:bg-purple-400"
             >
               Sign In
             </a>
-            <a
-              href="{% url 'userauth:signup' %}"
-              class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              Sign Up
-            </a>
+
           </div>
             {% endif %}
 

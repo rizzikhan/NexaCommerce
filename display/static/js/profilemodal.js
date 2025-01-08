@@ -30,21 +30,21 @@ document.addEventListener("DOMContentLoaded", function () {
           } else {
               data.watchlist.forEach((item) => {
                   const productHTML = `
-                      <div class="flex items-center justify-between border p-4 rounded-md">
-                          <div class="flex items-center">
+                      <div class="flex flex-col md:flex-row items-center justify-between bg-white border border-gray-200 rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+                          <div class="flex items-center gap-4">
                               <img
                                   src="${item.product_image || '/static/images/no-image.png'}"
                                   alt="${item.product_name}"
-                                  class="h-16 w-16 object-cover rounded-md"
+                                  class="h-20 w-20 object-cover rounded-md"
                               />
-                              <div class="ml-4">
-                                  <p class="font-bold">${item.product_name}</p>
-                                  <p class="text-blue-500">$${item.product_price}</p>
+                              <div class="ml-4">    
+                                  <p class="font-semibold text-lg text-gray-800">${item.product_name}</p>
+                                  <p class="text-blue-500 font-medium">$${item.product_price}</p>
                               </div>
                           </div>
-                          <div>
+                          <div class="flex gap-4 mt-4 md:mt-0" >
                               <button
-                                  class="add-to-cart bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                                  class="add-to-cart bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md transition-colors"
                                   data-product-id="${item.product_id}"
                               >
                                   Add to Cart

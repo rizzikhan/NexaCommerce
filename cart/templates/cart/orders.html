@@ -1,29 +1,95 @@
 {% extends 'base.html' %}
+{% load custom_filters %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-10">
-    <h1 class="text-2xl font-bold mb-6">Your Orders</h1>
+<div class="min-h-screen bg-gradient-to-br from-purple-50 to-white py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center justify-between mb-8">
+            <h1 class="text-3xl font-bold text-purple-900">Order History</h1>
+            <div class="bg-purple-100 rounded-full px-4 py-2 text-sm text-purple-700">
+                Total Orders: {{ orders|length }}
+            </div>
+        </div>
 
-    {% if orders %}
-    <ul class="list-disc pl-5">
-        {% for order in orders %}
-        <li class="mb-4">
-            <strong>Order ID:</strong> {{ order.id }}<br>
-            <strong>Total Amount:</strong> ${{ order.total_amount }}<br>
-            <strong>Date:</strong> {{ order.created_at }}<br>
-            <strong>Products:</strong>
-            <ul class="pl-5">
-                {% for product in order.products %}
-                <li>
-                    {{ product.name }} - Quantity: {{ product.quantity }} - Price: ${{ product.price }}
-                </li>
-                {% endfor %}
-            </ul>
-        </li>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <p>You have no completed orders.</p>
-    {% endif %}
+        {% if orders %}
+        <div class="space-y-6">
+            {% for order in orders %}
+            <div class="bg-white rounded-xl shadow-sm border border-purple-100 overflow-hidden">
+                <!-- Order Header -->
+                <div class="bg-purple-50 px-6 py-4 border-b border-purple-100">
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="text-purple-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <span class="text-sm text-purple-600 font-medium">Order ID:</span>
+                                <span class="ml-2 text-purple-900 font-semibold">#{{ order.id }}</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-6">
+                            <div>
+                                <span class="text-sm text-purple-600 font-medium">Date:</span>
+                                <span class="ml-2 text-purple-900">{{ order.created_at|date:"M d, Y" }}</span>
+                            </div>
+                            <div class="bg-purple-100 rounded-full px-4 py-1">
+                                <span class="text-sm font-semibold text-purple-700">${{ order.total_amount }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Products -->
+                <div class="divide-y divide-purple-100">
+                    {% for product in order.products %}
+                    <div class="px-6 py-4 hover:bg-purple-50 transition-colors">
+                        <div class="flex flex-wrap items-center justify-between gap-4">
+                            <div class="flex-1">
+                                <h3 class="text-lg font-medium text-purple-900">{{ product.name }}</h3>
+                                <p class="text-sm text-purple-600">Unit Price: ${{ product.price }}</p>
+                            </div>
+                            <div class="flex items-center space-x-6">
+                                <div class="text-sm">
+                                    <span class="text-purple-600 font-medium">Quantity:</span>
+                                    <span class="ml-2 text-purple-900">{{ product.quantity }}</span>
+                                </div>
+                                <div class="text-sm font-semibold text-purple-900">
+                                    ${{ product.price|mul:product.quantity }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Order Footer -->
+                <div class="bg-purple-50 px-6 py-4 border-t border-purple-100">
+                    <div class="flex justify-end">
+                        <div class="text-right">
+                            <span class="text-sm text-purple-600 font-medium">Total Amount:</span>
+                            <span class="ml-2 text-lg font-bold text-purple-900">${{ order.total_amount }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="bg-white rounded-xl shadow-sm border border-purple-100 p-8 text-center">
+            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+            </div>
+            <h3 class="text-xl font-medium text-purple-900 mb-2">No Orders Yet</h3>
+            <p class="text-purple-600">You haven't placed any orders yet. Start shopping to see your order history here!</p>
+            <a href="{% url 'products:list' %}" class="inline-block mt-6 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                Start Shopping
+            </a>
+        </div>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

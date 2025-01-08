@@ -18,25 +18,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 const productCard = `
-  <div class="bg-white shadow-md rounded-lg overflow-hidden">
-    <a href="http://127.0.0.1:8000/api/products/${product.id}/detailpage" class="block">
+  <div class=" bg-purple-100 shadow-md rounded-lg outline-none overflow-hidden">
+    <a href="http://127.0.0.1:8000/api/products/${product.id}/detailpage" class="block rounded-lg outline-none">
       ${
         product.image.includes('res.cloudinary.com')
           ? `<img 
               src="${product.image}" 
               alt="${product.name}" 
-              class="w-full h-48 object-cover transition-transform duration-300 hover:scale-105" />`
+              class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500" />`
           : `<img 
               src="https://res.cloudinary.com/dq8k7uqzw/${product.image.replace(/^image\/upload\//, '')}" 
               alt="${product.name}" 
-              class="w-full h-48 object-cover transition-transform duration-300 hover:scale-105" />`
+              class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500" />`
       }
     </a>
     <div class="p-4">
-      <h3 class="text-lg font-semibold">${product.name}</h3>
-      <p class="text-gray-500 text-sm">${product.description}</p>
-      <p class="text-blue-500 font-bold text-lg">$${product.price}</p>
-    </div>
+      <h3 class="block bg-purple-200 rounded text-lg font-semibold text-black-300">${product.name}</h3>
+      <p class="text-gray-500 text-sm bg-purple-100 rounded">${product.description}</p>
+      <p class="text-blue-500 font-bold text-lg bg-purple-100 rounded">$${product.price}</p>
+
+      </div>
   </div>
 `;
 

@@ -18,8 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const baseClasses = "px-4 py-2 rounded shadow-md flex items-center space-x-2 text-md";
         const typeClasses =
             type.toLowerCase() === "success"
-                ? "bg-green-500 text-white" 
-                : "bg-red-500 text-white"; 
+                ? "bg-purple-400 text-black" 
+                : "bg-red-400 text-black"; 
  
         notification.className = `${baseClasses} ${typeClasses} fade-in-out`;
 
