@@ -31,5 +31,6 @@ urlpatterns = [
 
     path('api/filterproducts/', product_list, name='product_list'),
 
+    path('', views.home, name='home'),
 
 ]

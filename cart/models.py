@@ -2,6 +2,8 @@ from django.db import models
 from django.conf import settings
 from display.models import Product
 from django.utils import timezone
+from django.core.exceptions import ValidationError
+
 
 class Cart(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -12,6 +14,23 @@ class Cart(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.product.name}"
     
+
+
+
+class ProductSales(models.Model):
+    product = models.OneToOneField(Product, on_delete=models.CASCADE, related_name='sales_data')
+    sales_count = models.PositiveIntegerField(default=0)  # Total products sold
+    return_count = models.PositiveIntegerField(default=0)  # Total products returned
+    
+
+    def __str__(self):
+        return f"{self.product.name} - Sales: {self.sales_count}, Returns: {self.return_count}"
+    
+    def save(self, *args, **kwargs):
+        if self.sales_count < 0:
+            raise ValidationError("Sales count cannot be negative.")
+        super().save(*args, **kwargs)
+
 
 class OrderDone(models.Model):
     order_id = models.CharField(max_length=20, unique=True , editable=False)

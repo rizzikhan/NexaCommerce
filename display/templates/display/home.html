@@ -1,0 +1,264 @@
+
+{% extends 'base.html' %}
+{% block title %}Product Detail{% endblock %}
+
+{% load static %}
+{% load cloudinary %}
+
+{% block content %}
+
+    <!-- caraousel  -->
+    <div class="relative overflow-hidden">
+    <!-- Carousel Container -->
+    <div id="carousel-container" class="flex transition-transform duration-500">
+        {% for image in carousel_images %}
+        <div class="w-full flex-shrink-0">
+            <img src="{{ image.image.url|add:'?c_fill,g_auto,w_800,h_800' }}" alt="{{ image.title }}" class="w-full h-68 object-cover">
+            {% if image.title or image.description %}
+            <div class="p-4 bg-gray-800 bg-opacity-75 text-white">
+                <h3 class="text-lg font-bold">{{ image.title }}</h3>
+                <p class="text-sm">{{ image.description }}</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Navigation Buttons -->
+    <button id="prev" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-700">
+        &larr;
+    </button>
+    <button id="next" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-700">
+        &rarr;
+    </button>
+    </div>
+  
+    <!-- categories  -->
+    <div class="container mx-auto px-4 py-8">
+        <div id="categoriesContainer" class="flex flex-wrap gap-4 justify-center  items-center">
+        </div>
+    </div>
+
+    
+    <!-- Top Selling Items -->
+    <section class="container mx-auto mt-12 px-4">
+      {% load social_share %}
+      <div class="container mx-auto px-4 py-8">
+        {% if user.role == 'normal' %}
+        <h2 class="text-2xl font-bold mb-6">Top Selling Items</h2>
+        {% endif %}
+      
+        <div id="productContainer" class="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-5 gap-3 ml-2 mr-2">
+          {% for product in top_selling_products %}
+            <div 
+              class="product-card bg-purple-100 shadow-md rounded-lg outline-none overflow-hidden" 
+              data-product-id="{{ product.id }}" 
+              data-price="{{ product.price }}" 
+              data-created-at="{{ product.created_at|date:'Y-m-d H:i:s' }}"
+            >
+              {% if product.image %}
+                <a href="{% url 'display:detailedpage' product.id %}" class="block rounded-lg outline-none ">
+                  {% cloudinary product.image format="jpg" crop="fill" alt=product.name %}
+                </a>
+              {% else %}
+                <div class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500">
+                  No Image
+                </div>
+              {% endif %}
+      
+              <div class="p-4">
+                <a href="{% url 'display:detailedpage' product.id %}" class="block bg-purple-200 rounded text-lg font-semibold text-black-300">
+                  {{ product.name }}
+                </a>
+                <p class="text-gray-500 text-sm bg-purple-100 rounded">
+                  {{ product.description|truncatechars:25 }}
+                </p>
+                <p class="text-blue-500 font-bold text-lg bg-purple-100 rounded">${{ product.price }}</p>
+      
+                <p class="text-sm text-black-100 font-medium mt-1 bg-purple-100 rounded">
+                   
+                  {% if product.category %}
+                    Category: {{ product.category.name }}
+                  {% else %}
+                    No Category
+                  {% endif %}
+                </p>
+      
+                {% if product.stock > 0 %}
+                  <p class="text-green-500 text-sm mt-1 bg-purple-100 rounded">
+                    In Stock ({{ product.stock }} available)
+                  </p>
+                  {% endif %}
+              </div>
+          </div>
+          {% endfor %}
+      
+      </div>
+      </div>
+          </section>
+
+          
+    <!-- Sale Category Items -->
+    <section class="container mx-auto mt-12 px-4">
+{% load social_share %}
+<div class="container mx-auto px-4 py-8">
+  {% if user.role == 'normal' %}
+  <h2 class="text-2xl font-bold mb-6">Sale Items</h2>
+  {% endif %}
+
+  <div id="productContainer" class="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-5 gap-3 ml-2 mr-2">
+    {% for product in sale_products %}
+      <div 
+        class="product-card bg-purple-100 shadow-md rounded-lg outline-none overflow-hidden" 
+        data-product-id="{{ product.id }}" 
+        data-price="{{ product.price }}" 
+        data-created-at="{{ product.created_at|date:'Y-m-d H:i:s' }}"
+      >
+        {% if product.image %}
+          <a href="{% url 'display:detailedpage' product.id %}" class="block rounded-lg outline-none ">
+            {% cloudinary product.image format="jpg" crop="fill" alt=product.name %}
+          </a>
+        {% else %}
+          <div class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500">
+            No Image
+          </div>
+        {% endif %}
+
+        <div class="p-4">
+          <a href="{% url 'display:detailedpage' product.id %}" class="block bg-purple-200 rounded text-lg font-semibold text-black-300">
+            {{ product.name }}
+          </a>
+          <p class="text-gray-500 text-sm bg-purple-100 rounded">
+            {{ product.description|truncatechars:25 }}
+          </p>
+          <p class="text-blue-500 font-bold text-lg bg-purple-100 rounded">${{ product.price }}</p>
+
+          <p class="text-sm text-black-100 font-medium mt-1 bg-purple-100 rounded">
+             
+            {% if product.category %}
+              Category: {{ product.category.name }}
+            {% else %}
+              No Category
+            {% endif %}
+          </p>
+
+          {% if product.stock > 0 %}
+            <p class="text-green-500 text-sm mt-1 bg-purple-100 rounded">
+              In Stock ({{ product.stock }} available)
+            </p>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+</div>
+    </section>
+
+    <!-- Discounted Products -->
+    <section class="container mx-auto mt-12 px-4">
+{% load social_share %}
+<div class="container mx-auto px-4 py-8">
+  {% if user.role == 'normal' %}
+  <h2 class="text-2xl font-bold mb-6">Discounted Products</h2>
+  {% endif %}
+
+  <div id="productContainer" class="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-5 gap-3 ml-2 mr-2">
+    {% for product in discounted_products %}
+      <div 
+        class="product-card bg-purple-100 shadow-md rounded-lg outline-none overflow-hidden" 
+        data-product-id="{{ product.id }}" 
+        data-price="{{ product.price }}" 
+        data-created-at="{{ product.created_at|date:'Y-m-d H:i:s' }}"
+      >
+        {% if product.image %}
+          <a href="{% url 'display:detailedpage' product.id %}" class="block rounded-lg outline-none ">
+            {% cloudinary product.image format="jpg" crop="fill" alt=product.name %}
+          </a>
+        {% else %}
+          <div class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500">
+            No Image
+          </div>
+        {% endif %}
+
+        <div class="p-4">
+          <a href="{% url 'display:detailedpage' product.id %}" class="block bg-purple-200 rounded text-lg font-semibold text-black-300">
+            {{ product.name }}
+          </a>
+          <p class="text-gray-500 text-sm bg-purple-100 rounded">
+            {{ product.description|truncatechars:25 }}
+          </p>
+          <p class="text-blue-500 font-bold text-lg bg-purple-100 rounded">${{ product.price }}</p>
+
+          <p class="text-sm text-black-100 font-medium mt-1 bg-purple-100 rounded">
+             
+            {% if product.category %}
+              Category: {{ product.category.name }}
+            {% else %}
+              No Category
+            {% endif %}
+          </p>
+
+          {% if product.stock > 0 %}
+            <p class="text-green-500 text-sm mt-1 bg-purple-100 rounded">
+              In Stock ({{ product.stock }} available)
+            </p>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+</div>
+    </section>
+
+    <!-- Info Section -->
+    <section class="bg-gray-100 mt-12 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Customer Support -->
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Customer Support</h3>
+                    <ul class="space-y-2 text-gray-600">
+                        <li>24/7 Support</li>
+                        <li>Live Chat</li>
+                        <li>Phone: +923008645286</li>
+                        <li>Email: rizwanahmed@piecyfer.com</li>
+                    </ul>
+                </div>
+
+                <!-- Policy -->
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Our Policies</h3>
+                    <ul class="space-y-2 text-gray-600">
+                        <li>Shipping Policy</li>
+                        <li>Return Policy</li>
+                        <li>Privacy Policy</li>
+                        <li>Terms of Service</li>
+                    </ul>
+                </div>
+
+                <!-- Location -->
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Our Location</h3>
+                    <address class="text-gray-600">
+                        123 Store Street<br>
+                        City, State 12345<br>
+                        Country
+                    </address>
+                </div>
+
+                <!-- Services -->
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Our Services</h3>
+                    <ul class="space-y-2 text-gray-600">
+                        <li>Free Shipping</li>
+                        <li>Gift Cards</li>
+                        <li>Order Tracking</li>
+                        <li>Reward Program</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

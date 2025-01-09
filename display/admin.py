@@ -1,11 +1,17 @@
 from django.contrib import admin
-from .models import Product , Watchlist , Comment , Category
+from .models import Product , Watchlist , Comment , Category,CarouselImage
 
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'description']
     search_fields = ['name']
+
+
+@admin.register(CarouselImage)
+class CarouselImageAdmin(admin.ModelAdmin):
+    list_display = ('title', 'order', 'is_active')
+    list_editable = ('order', 'is_active')
 
 
 @admin.register(Product)

@@ -273,4 +273,140 @@
         
     </div>
 </div>
+
+<h1 class="text-3xl font-bold mb-6">Suggestions</h1>
+
+<!-- Suggested Products -->
+<div class="container mx-auto px-4 py-8">
+
+  
+    <div id="productContainer" class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-6 ml-5 mr-5">
+      {% for suggested in suggested_products %}
+        <div class="product-card bg-purple-100 shadow-md rounded-lg outline-none overflow-hidden">
+          {% if suggested.image %}
+            <a href="{% url 'display:detailedpage' suggested.id %}" class="block rounded-lg outline-none ">
+              {% cloudinary suggested.image format="jpg" crop="fill" alt=suggested.name %}
+            </a>
+          {% else %}
+            <div class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500">
+              No Image
+            </div>
+          {% endif %}
+  
+          <div class="p-4">
+            <a href="{% url 'display:detailedpage' suggested.id %}" class="block bg-purple-200 rounded text-lg font-semibold text-black-300">
+              {{ suggested.name }}
+            </a>
+            <p class="text-gray-500 text-sm bg-purple-100 rounded">
+              {{ suggested.description|truncatechars:25 }}
+            </p>
+            <p class="text-blue-500 font-bold text-lg bg-purple-100 rounded">${{ suggested.price }}</p>
+  
+            <!-- Category Display -->
+            <p class="text-sm text-black-100 font-medium mt-1 bg-purple-100 rounded">
+              Category: 
+              {% if suggested.category %}
+                {{ suggested.category.name }}
+              {% else %}
+                No Category
+              {% endif %}
+            </p>
+  
+            {% if suggested.stock > 0 %}
+              <p class="text-green-500 text-sm mt-1 bg-purple-100 rounded">
+                In Stock ({{ suggested.stock }} available)
+              </p>
+              {% if user.is_authenticated %}
+              <div class="flex items-center gap-1">
+                <input
+                  type="number"
+                  class="border bg-purple-200 px-2 py-1 rounded w-14 quantity-input"
+                  data-product-id="{{ suggested.id }}"
+                  min="1"
+                  max="{{ suggested.stock }}"
+                  value="1"
+                />
+                <button
+                  class="add-to-cart bg-purple-200 text-white px-2 py-2 rounded hover:bg-purple-400 "
+                  data-product-id="{{ suggested.id }}"
+                >
+                <svg 
+                width="20" 
+                height="20" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <!-- Cart Body -->
+                <path 
+                    d="M3 3H5L6.68 14.39C6.78 15.17 7.48 15.75 8.27 15.75H19.33C20.12 15.75 20.82 15.17 20.92 14.39L22 6H6" 
+                    stroke="#6B21A8" 
+                    stroke-width="2" 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round"
+                />
+                
+                <!-- Cart Wheels -->
+                <circle cx="9" cy="20" r="1" fill="#6B21A8"/>
+                <circle cx="17" cy="20" r="1" fill="#6B21A8"/>
+            
+                <path 
+                    d="M12 8V12M10 10H14" 
+                    stroke="#6B21A8" 
+                    stroke-width="2" 
+                    stroke-linecap="round"
+                />
+            </svg>                
+          </button>
+                <button
+                  class="watchlist-toggle"
+                  data-product-id="{{ suggested.id }}"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-8 w-8 transition-colors duration-300 {% if suggested.in_watchlist %}text-red-500{% else %}text-gray-500{% endif %}"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="3"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    />
+                  </svg>
+                </button>
+              </div>
+              {% else %}
+              <div class="mt-4">
+              <a
+                href="{% url 'userauth:login' %}"
+                class="bg-purple-200 text-black px-4 py-2 rounded hover:bg-purple-400"
+              >
+                Sign In
+              </a>
+              <a
+                href="{% url 'userauth:signup' %}"
+                class="bg-purple-200 text-black px-4 py-2 ml-2  rounded hover:bg-purple-400"
+              >
+                Sign Up
+              </a>
+            </div>
+              {% endif %}
+  
+            {% else %}
+              <button
+                class="bg-gray-400 text-white px-4 py-2 rounded cursor-not-allowed"
+                disabled
+              >
+                Out of Stock
+              </button>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
 {% endblock %}

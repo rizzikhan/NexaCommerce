@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response 
 from rest_framework import status
-from .models import Cart 
+from .models import Cart ,ProductSales
 from .serializers import CartSerializer
 from display.models import Product 
 from django.shortcuts import render 
@@ -310,6 +310,14 @@ def stripe_webhook(request):
                 else:
                     print(f"Insufficient stock for product {item.product.name}")
                     return HttpResponseBadRequest(f"Insufficient stock for product {item.product.name}")
+                
+            
+                        # Update sales count
+                product_sales, created = ProductSales.objects.get_or_create(product=item.product)
+                product_sales.sales_count += item.quantity
+                product_sales.save()
+                print(f"Sales count updated for product {item.product.name}, new count: {product_sales.sales_count}")
+
 
             print(f"user: {user}")
             print(f"products: {products}")
@@ -416,25 +424,51 @@ def orders_template_view(request):
 
 
 
-@csrf_exempt  
+@csrf_exempt
 @api_view(['POST'])
 def process_refund(request):
     order_id = request.data.get('order_id')
     intent_id = request.data.get('intent_id')
-    print("we are in process_refund ")
+    print("we are in process_refund")
     try:
+        # Fetch the order
         order = OrderDone.objects.get(id=order_id, intent=intent_id)
-        print(f"order lsit {order}")
+        print(f"Order list: {order}")
+
+        # Process refund via Stripe
         refund = stripe.Refund.create(payment_intent=intent_id)
-        print("Going to refund user ")
+        print("Going to refund user")
+        
+        # Update refund status
         order.refund_status = "Refunded"
+        order.is_refunded = True
         order.save()
 
+        # Iterate through products in the order
+        for item in order.products:  # Assuming `products` is a JSON field
+            product = Product.objects.get(name=item['name'])  # Match by name or ID
+            
+            # Adjust stock (add refunded quantity back to stock)
+            product.stock += item['quantity']
+            product.save()
+            print(f"Stock restored for product {product.name}, new stock: {product.stock}")
+
+            # Adjust sales and return counts
+            product_sales, created = ProductSales.objects.get_or_create(product=product)
+            product_sales.sales_count = max(product_sales.sales_count - item['quantity'], 0)
+            product_sales.return_count += item['quantity']  # Increment return count
+            product_sales.save()
+
+            print(f"Updated sales and return counts for product {product.name}")
+
         return Response({"message": "Refund processed successfully."})
+
     except OrderDone.DoesNotExist:
+        print("Order not found")
         return Response({"error": "Order not found."}, status=404)
     except stripe.error.StripeError as e:
+        print(f"Stripe error: {e}")
         return Response({"error": str(e)}, status=400)
     except Exception as e:
+        print(f"Unexpected error during refund: {e}")
         return Response({"error": "An error occurred while processing the refund."}, status=500)
-    

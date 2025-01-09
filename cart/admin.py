@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Cart, OrderDone
+from .models import Cart, OrderDone ,ProductSales
 
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
@@ -40,3 +40,23 @@ class OrderDoneAdmin(admin.ModelAdmin):
         self.message_user(request, f"Successfully marked {count} orders as not refunded.")
 
     mark_as_not_refunded.short_description = "Mark selected orders as not refunded"
+
+
+@admin.action(description="Reset Sales Count")
+def reset_sales_count(modeladmin, request, queryset):
+    queryset.update(sales_count=0)
+
+@admin.action(description="Reset Return Count")
+def reset_return_count(modeladmin, request, queryset):
+    queryset.update(return_count=0)
+
+
+@admin.register(ProductSales)
+class ProductSalesAdmin(admin.ModelAdmin):
+    list_display = ('product', 'sales_count', 'return_count')  # Columns to display in the admin list view
+    list_filter = ('product__category',)  # Add a filter for product categories (if applicable)
+    search_fields = ('product__name',)  # Enable searching by product name
+    ordering = ('-sales_count',)  # Default ordering by highest sales count
+    list_editable = ('sales_count', 'return_count')  # Allow inline editing of these fields
+    readonly_fields = ('product',)  # Make the product field read-only to prevent accidental changes
+    actions = [reset_sales_count, reset_return_count]

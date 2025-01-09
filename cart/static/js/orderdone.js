@@ -66,6 +66,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         try {
                             const csrfToken = getCSRFToken();
+                            console.log("csrfToken")
+                            console.log(csrfToken)
+                            console.log("orderId")
+                            console.log(orderId)
+                            console.log("intentId")
+                            console.log(intentId)
 
                             const refundResponse = await fetch("/api/cart/refund/", {
                                 method: "POST",
@@ -79,18 +85,25 @@ document.addEventListener("DOMContentLoaded", function () {
                                     intent_id: intentId,
                                 }),
                             });
+                            console.log("refundResponse")
+                            console.log(refundResponse)
 
-                            if (!refundResponse.ok) {
-                                throw new Error("Refund failed.");
-                            }
                             const refundData = await refundResponse.json();
-                            showNotification("Success", "Refund processed successfully.");
-                            button.innerText = "Refunded";
-                            button.classList.remove("bg-red-500");
-                            button.classList.add("bg-gray-500", "cursor-not-allowed");
-                            button.disabled = true;
+
+                            if (refundResponse.ok || refundData.message === "Refund processed successfully.") {
+                                showNotification("Success", "Refund processed successfully.");
+                                button.innerText = "Refunded";
+                                button.classList.remove("bg-red-500");
+                                button.classList.add("bg-gray-500", "cursor-not-allowed");
+                                button.disabled = true;
+                            } else {
+                                // If response contains an error
+                                const errorMessage = refundData.error || "Refund could not be processed.";
+                                throw new Error(errorMessage);
+                            }
                         } catch (error) {
                             console.error("Refund error:", error);
+                            setTimeout(() => location.reload(), 2000); // Reload the page after 2 seconds
                             showNotification("error", "Either already refunded or Refund could not be processed. Please try again later.");
 
                         }

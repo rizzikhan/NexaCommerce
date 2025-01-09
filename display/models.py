@@ -17,6 +17,20 @@ class Category(models.Model):
     def __str__(self):
         return self.name
     
+
+class CarouselImage(models.Model):
+    title = models.CharField(max_length=255, blank=True, null=True)  
+    image = CloudinaryField('image')  
+    description = models.TextField(blank=True, null=True)  
+    order = models.PositiveIntegerField(default=0)  
+    is_active = models.BooleanField(default=True)  
+
+    class Meta:
+        ordering = ['order'] 
+
+    def __str__(self):
+        return self.title or f"Carousel Image {self.pk}"
+    
     
 class Product(models.Model):
     name = models.CharField(max_length=255)
