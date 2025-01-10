@@ -3,6 +3,7 @@ from django.conf import settings
 from cloudinary.models import CloudinaryField
 from django.core.exceptions import ValidationError
 from django.urls import reverse
+import bleach  
 
 
 def validate_positive(value):
@@ -56,6 +57,15 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('display:detailedpage', args=[str(self.id)])
+    
+    def save(self, *args, **kwargs):
+        allowed_tags = ['b', 'i', 'u', 'strong', 'em', 'p', 'ul', 'li', 'ol', 'a', 'br']
+        allowed_attributes = {'a': ['href', 'title', 'target']}
+
+        if self.description:
+            self.description = bleach.clean(self.description, tags=allowed_tags, attributes=allowed_attributes, strip=True)
+
+        super().save(*args, **kwargs)
     
 
 

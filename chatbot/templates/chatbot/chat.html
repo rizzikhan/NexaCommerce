@@ -60,10 +60,17 @@
 </div>
 
 <script>
+    function escapeHTML(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
     const chatBox = document.getElementById('chat-box');
     const userInput = document.getElementById('user-input');
 
     function appendMessage(sender, message) {
+        const safeMessage = escapeHTML(message);  // Sanitize the message
+
         const messageDiv = document.createElement('div');
         
         if (sender === 'User') {
@@ -75,7 +82,7 @@
                     </svg>
                 </div>
                 <div class="bg-purple-600 text-white rounded-2xl rounded-tr-none p-4 max-w-[80%]">
-                    <p>${message}</p>
+                    <p>${safeMessage}</p>
                 </div>
             `;
         } else {
@@ -87,7 +94,7 @@
                     </svg>
                 </div>
                 <div class="bg-purple-100 rounded-2xl rounded-tl-none p-4 max-w-[80%]">
-                    <p class="text-purple-900">${message}</p>
+                    <p class="text-purple-900">${safeMessage}</p>
                 </div>
             `;
         }

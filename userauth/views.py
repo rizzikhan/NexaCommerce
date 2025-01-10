@@ -7,6 +7,7 @@ from EMAILapp.utils import send_otp_email, verify_email_otp
 from SMSapp.twilio_otp import send_otp
 from django.urls import reverse
 from django.contrib.auth import authenticate, login ,logout
+from django_ratelimit.decorators import ratelimit
 
 
 
@@ -58,7 +59,7 @@ def signup_view(request):
     return render(request, 'userauth/signup.html', {'form': CustomUserCreationForm()})
 
 
-
+@ratelimit(key='ip', rate='5/m', block=True)
 @csrf_exempt
 def login_view(request):
     if request.method == 'POST':
@@ -106,7 +107,7 @@ def login_view(request):
 
     return render(request, 'userauth/login.html')
 
-
+@ratelimit(key='ip', rate='5/m', block=True)
 def reset_password_view(request):
     if request.method == 'POST':
         form = ResetPasswordForm(request.POST)

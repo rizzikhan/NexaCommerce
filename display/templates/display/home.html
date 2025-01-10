@@ -13,8 +13,9 @@
     <div id="carousel-container" class="flex transition-transform duration-500">
         {% for image in carousel_images %}
         <div class="w-full flex-shrink-0">
+          <a href="{% url 'display:display' %}">
             <img src="{{ image.image.url|add:'?c_fill,g_auto,w_800,h_800' }}" alt="{{ image.title }}" class="w-full h-68 object-cover">
-            {% if image.title or image.description %}
+        </a>            {% if image.title or image.description %}
             <div class="p-4 bg-gray-800 bg-opacity-75 text-white">
                 <h3 class="text-lg font-bold">{{ image.title }}</h3>
                 <p class="text-sm">{{ image.description }}</p>

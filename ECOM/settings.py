@@ -10,18 +10,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY')
-DEBUG = True
-ALLOWED_HOSTS = [
-    '127.0.0.1',
-    'localhost',
-    '.ngrok-free.app',
-    'f1a0-39-45-6-101.ngrok-free.app'
 
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    'https://f1a0-39-45-6-101.ngrok-free.app',
-]
 
 AUTH_USER_MODEL = 'userauth.CustomUser'
 
@@ -86,15 +75,7 @@ TEMPLATES = [
     },
 ]
 
-# CORS_ORIGIN_ALLOW_ALL = True
 
-
-CORS_ALLOWED_ORIGINS = [
-    'http://127.0.0.1:8000',
-    'http://localhost:8000',
-    'http://127.0.0.1:4040',
-    'https://a9ad-39-45-6-101.ngrok-free.app',
-]
 # Static & Media
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
@@ -149,3 +130,80 @@ cloudinary.config(
     api_key=os.getenv('CLOUDINARY_API_KEY'),
     api_secret=os.getenv('CLOUDINARY_API_SECRET')
 )
+
+##################   SECURITY SECITON   #################### 
+
+# # For Security make false in production
+DEBUG = True
+
+# # Restrict Allowed Hosts
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    '.ngrok-free.app',
+    'f1a0-39-45-6-101.ngrok-free.app'
+
+]
+#will accept POST requests from this domains 
+CSRF_TRUSTED_ORIGINS = [
+    'https://f1a0-39-45-6-101.ngrok-free.app',
+]
+
+
+#CORS will not show error for these sites 
+CORS_ALLOWED_ORIGINS = [
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+    'http://127.0.0.1:4040',
+    'https://a9ad-39-45-6-101.ngrok-free.app',
+]
+
+
+
+
+#For Testing 
+# # For Security make false in production
+DEBUG = True
+# Enforce HTTPS by redirecting HTTP to HTTPS
+SECURE_SSL_REDIRECT = False
+SECURE_HSTS_SECONDS = 0
+# Use Secure Cookies but will not work if use cookies in authentication 
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+# Enable HSTS
+SECURE_HSTS_SECONDS = 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+SECURE_HSTS_PRELOAD = False
+# XSS Protection
+SECURE_BROWSER_XSS_FILTER = True
+# Clickjacking Protection
+X_FRAME_OPTIONS = 'DENY'
+SECURE_CONTENT_TYPE_NOSNIFF = False
+SESSION_COOKIE_SECURE = True      # Cookies sent over HTTPS only
+SESSION_COOKIE_HTTPONLY = True    # Prevent JS access to cookies
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 1800         # 30 minutes
+CSRF_COOKIE_SAMESITE = 'Lax'
+
+
+
+
+
+
+# # For Production
+# # For Security make false in production
+# DEBUG = False
+# Enforce HTTPS by redirecting HTTP to HTTPS
+# SECURE_SSL_REDIRECT = True
+# Use Secure Cookies but will not work if use cookies in authentication 
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+# SECURE_HSTS_SECONDS = 31536000
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
+# XSS Protection
+# SECURE_BROWSER_XSS_FILTER = True
+# Clickjacking Protection
+# X_FRAME_OPTIONS = 'DENY'
+# SECURE_CONTENT_TYPE_NOSNIFF = True
+# CSRF_COOKIE_SAMESITE = 'Lax'
