@@ -134,7 +134,6 @@ cloudinary.config(
 ##################   SECURITY SECITON   #################### 
 
 # # For Security make false in production
-DEBUG = True
 
 # # Restrict Allowed Hosts
 ALLOWED_HOSTS = [
@@ -175,13 +174,13 @@ SECURE_HSTS_SECONDS = 0
 SECURE_HSTS_INCLUDE_SUBDOMAINS = False
 SECURE_HSTS_PRELOAD = False
 # XSS Protection
-SECURE_BROWSER_XSS_FILTER = True
+SECURE_BROWSER_XSS_FILTER = False
 # Clickjacking Protection
 X_FRAME_OPTIONS = 'DENY'
 SECURE_CONTENT_TYPE_NOSNIFF = False
-SESSION_COOKIE_SECURE = True      # Cookies sent over HTTPS only
-SESSION_COOKIE_HTTPONLY = True    # Prevent JS access to cookies
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_SECURE = False      # Cookies sent over HTTPS only
+SESSION_COOKIE_HTTPONLY = False    # Prevent JS access to cookies
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_COOKIE_AGE = 1800         # 30 minutes
 CSRF_COOKIE_SAMESITE = 'Lax'
 

@@ -23,6 +23,34 @@
             <!-- Chat Messages -->
             <div id="chat-box" class="h-[350px] overflow-y-auto p-6 bg-gradient-to-b from-purple-50/50 to-white space-y-4">
                 <!-- Bot's initial message with enhanced styling -->
+                {% if chat_history %}
+                {% for chat in chat_history %}
+                    <!-- User Message -->
+                    <div class="flex items-start flex-row-reverse space-x-3 space-x-reverse">
+                        <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <div class="bg-purple-600 text-white rounded-2xl rounded-tr-none p-4 max-w-[80%]">
+                            <p>{{ chat.user_message }}</p>
+                        </div>
+                    </div>
+        
+                    <!-- Bot Response -->
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                            </svg>
+                        </div>
+                        <div class="bg-purple-100 rounded-2xl rounded-tl-none p-4 max-w-[80%]">
+                            <p class="text-purple-900">{{ chat.bot_response }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <!-- Default Greeting -->
                 <div class="flex items-start space-x-3">
                     <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -33,7 +61,69 @@
                         <p class="text-purple-900">Hello! How can I assist you today?</p>
                     </div>
                 </div>
+            {% endif %}
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                        </svg>
+                    </div>
+                    <!-- Bot Message Styling -->
+<div class="bg-purple-100 rounded-2xl rounded-tl-none p-4 max-w-[80%]">
+    <div class="text-purple-900 leading-relaxed" id="bot-response-content">
+        {{ response|safe }}
+    </div>
+</div>
+
+                </div>
             </div>
+<!-- Typing Indicator (Invisible by Default) -->
+<div id="typing-indicator" class="hidden flex items-center space-x-2 p-2 text-purple-600">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m0 14v1m8-8h1M4 12H3m15.36 7.36l.7.7m-13.42-13.4l-.7-.7m13.42 0l.7-.7m-13.42 13.4l-.7.7"/>
+    </svg>
+    <span>Typing...</span>
+</div>
+
+
+<!-- 🚀 Quick Replies Section -->
+<div class="quick-replies mt-4 flex flex-wrap gap-3 justify-center">
+    <!-- 🌟 Popular Products Button -->
+    <button 
+        onclick="sendQuickReply('Show me popular products')" 
+        class="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-full shadow-md hover:bg-purple-700 hover:shadow-lg transition transform hover:-translate-y-1 hover:scale-105 focus:outline-none"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h11M9 21V3m12 10h-4m0 0V7m0 6v4" />
+        </svg>
+        Popular Products
+    </button>
+
+    <!-- 🛒 My Cart Button -->
+    <button 
+        onclick="sendQuickReply('Show my cart')" 
+        class="flex items-center gap-2 px-4 py-2 bg-green-500 text-white text-sm font-medium rounded-full shadow-md hover:bg-green-600 hover:shadow-lg transition transform hover:-translate-y-1 hover:scale-105 focus:outline-none"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 7M7 13l-1.4 5M17 13l1.4 5M9 21h6" />
+        </svg>
+        My Cart
+    </button>
+
+    <!-- 🛍️ Orders Button -->
+    <button 
+        onclick="sendQuickReply('Show my orders')" 
+        class="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-full shadow-md hover:bg-blue-600 hover:shadow-lg transition transform hover:-translate-y-1 hover:scale-105 focus:outline-none"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-3-3v6m3-12h-6a2 2 0 00-2 2v14l4-2 4 2V5a2 2 0 00-2-2z" />
+        </svg>
+        My Orders
+    </button>
+
+  
+</div>
+
 
             <!-- Input Area -->
             <div class="p-4 bg-white border-t border-purple-100">
@@ -59,83 +149,137 @@
     </div>
 </div>
 
+
 <script>
-    function escapeHTML(text) {
+function escapeHTML(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
-    const chatBox = document.getElementById('chat-box');
-    const userInput = document.getElementById('user-input');
+function sendQuickReply(message) {
+    userInput.value = message;
+    sendMessage();
+}
 
-    function appendMessage(sender, message) {
-        const safeMessage = escapeHTML(message);  // Sanitize the message
+const chatBox = document.getElementById('chat-box');
+chatBox.scrollTop = chatBox.scrollHeight;  // 📜 Auto-scroll to bottom
 
-        const messageDiv = document.createElement('div');
-        
-        if (sender === 'User') {
-            messageDiv.className = 'flex items-start flex-row-reverse space-x-3 space-x-reverse';
-            messageDiv.innerHTML = `
-                <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                </div>
-                <div class="bg-purple-600 text-white rounded-2xl rounded-tr-none p-4 max-w-[80%]">
-                    <p>${safeMessage}</p>
-                </div>
-            `;
-        } else {
-            messageDiv.className = 'flex items-start space-x-3';
-            messageDiv.innerHTML = `
-                <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
-                    </svg>
-                </div>
-                <div class="bg-purple-100 rounded-2xl rounded-tl-none p-4 max-w-[80%]">
-                    <p class="text-purple-900">${safeMessage}</p>
-                </div>
-            `;
-        }
-        
-        chatBox.appendChild(messageDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
+const userInput = document.getElementById('user-input');
+
+// 🎨 Format the Bot Response for Better Readability
+function formatBotResponse(message) {
+    // Convert **bold** to <strong> and *italic* to <em>
+    message = message.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>');
+    message = message.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
+
+    // Format numbered and bullet lists
+    message = message.replace(/(\d+)\.\s/g, '<br><span class="font-semibold">$1.</span> ');
+    message = message.replace(/[-•]\s/g, '<br>• ');
+
+    // Add line breaks
+    message = message.replace(/\n/g, '<br>');
+
+    return message;
+}
+
+// 💬 Append Messages to Chat
+function appendMessage(sender, message) {
+    const safeMessage = formatBotResponse(escapeHTML(message));  // ✨ Apply formatting
+    const messageDiv = document.createElement('div');
+
+    if (sender === 'User') {
+        messageDiv.className = 'flex items-start flex-row-reverse space-x-3 space-x-reverse';
+        messageDiv.innerHTML = `
+            <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+            </div>
+            <div class="bg-purple-600 text-white rounded-2xl rounded-tr-none p-4 max-w-[80%] shadow-lg">
+                <p>${safeMessage}</p>
+            </div>
+        `;
+    } else {
+        messageDiv.className = 'flex items-start space-x-3';
+        messageDiv.innerHTML = `
+            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                </svg>
+            </div>
+            <div class="bg-purple-100 rounded-2xl rounded-tl-none p-4 max-w-[80%] shadow-lg">
+                <p class="text-purple-900 leading-relaxed">${safeMessage}</p>
+            </div>
+        `;
     }
 
-    userInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            sendMessage();
-        }
-    });
+    chatBox.appendChild(messageDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;  // 🔄 Auto-scroll
+}
 
-    function sendMessage() {
-        const message = userInput.value.trim();
-        if (!message) return;
+// ⌨️ Enter Key to Send Message
+userInput.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
+});
 
-        appendMessage('User', message);
-        userInput.value = '';
+// 📤 Send Message Function
+function sendMessage() {
+    const message = userInput.value.trim();
+    if (!message) return;
 
-        fetch("{% url 'chatbot:process_query' %}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: `question=${encodeURIComponent(message)}`
-        })
+    appendMessage('User', message);
+    userInput.value = '';
+
+    // 🕐 Show Typing Indicator
+    showTypingIndicator();
+
+    fetch("{% url 'chatbot:process_query' %}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: `question=${encodeURIComponent(message)}`
+    })
         .then(response => response.json())
         .then(data => {
+            hideTypingIndicator();  // ✅ Hide after response
             if (data.response) {
                 appendMessage('Bot', data.response);
             } else {
-                appendMessage('Bot', 'Something went wrong. Please try again.');
+                appendMessage('Bot', '⚠️ Something went wrong. Please try again.');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            appendMessage('Bot', 'Error: Failed to connect to server.');
+            hideTypingIndicator();
+            appendMessage('Bot', '❌ Error: Failed to connect to the server.');
         });
+}
+
+// ⏳ Typing Indicator Functions
+function showTypingIndicator() {
+    if (!document.getElementById('typing-indicator')) {
+        const typingDiv = document.createElement('div');
+        typingDiv.id = 'typing-indicator';
+        typingDiv.className = 'flex items-center space-x-2 p-2 text-purple-600';
+        typingDiv.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m0 14v1m8-8h1M4 12H3m15.36 7.36l.7.7m-13.42-13.4l-.7-.7m13.42 0l.7-.7m-13.42 13.4l-.7.7"/>
+            </svg>
+            <span>Typing...</span>
+        `;
+        chatBox.appendChild(typingDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
     }
+}
+
+function hideTypingIndicator() {
+    const typingDiv = document.getElementById('typing-indicator');
+    if (typingDiv) typingDiv.remove();
+}
+
 </script>
 {% endblock %}
