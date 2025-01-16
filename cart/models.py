@@ -19,8 +19,8 @@ class Cart(models.Model):
 
 class ProductSales(models.Model):
     product = models.OneToOneField(Product, on_delete=models.CASCADE, related_name='sales_data')
-    sales_count = models.PositiveIntegerField(default=0)  # Total products sold
-    return_count = models.PositiveIntegerField(default=0)  # Total products returned
+    sales_count = models.PositiveIntegerField(default=0)  
+    return_count = models.PositiveIntegerField(default=0)  
     
 
     def __str__(self):

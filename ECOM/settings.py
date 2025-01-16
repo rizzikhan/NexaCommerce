@@ -5,6 +5,7 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 
+
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,8 +34,6 @@ INSTALLED_APPS = [
     'chatbot',
     'corsheaders',
     'django_social_share',
-
-
 ]
 
 

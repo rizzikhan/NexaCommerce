@@ -97,13 +97,12 @@ document.addEventListener("DOMContentLoaded", function () {
                                 button.classList.add("bg-gray-500", "cursor-not-allowed");
                                 button.disabled = true;
                             } else {
-                                // If response contains an error
                                 const errorMessage = refundData.error || "Refund could not be processed.";
                                 throw new Error(errorMessage);
                             }
                         } catch (error) {
                             console.error("Refund error:", error);
-                            setTimeout(() => location.reload(), 2000); // Reload the page after 2 seconds
+                            setTimeout(() => location.reload(), 2000);
                             showNotification("error", "Either already refunded or Refund could not be processed. Please try again later.");
 
                         }

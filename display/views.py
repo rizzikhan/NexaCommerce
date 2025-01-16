@@ -54,22 +54,18 @@ def display(request):
 
 
 def home(request):
-    # Fetch the categories "Sale Items" and "Discounted"
     sale_category = Category.objects.filter(name="Sale Items").first()
     discounted_category = Category.objects.filter(name="Discounted").first()
     carousel_images = CarouselImage.objects.filter(is_active=True)
 
-    # Get products from the respective categories
     sale_products = Product.objects.filter(category=sale_category) if sale_category else []
     discounted_products = Product.objects.filter(category=discounted_category) if discounted_category else []
 
-        # Fetch top 5 most selling products
     top_selling_products = (
         Product.objects.annotate(total_sales=Sum('sales_data__sales_count'))
         .order_by('-total_sales')[:5]
     )
 
-    # Context for the template
     context = {
         'carousel_images': carousel_images,
         'sale_products': sale_products,

@@ -53,10 +53,10 @@ def reset_return_count(modeladmin, request, queryset):
 
 @admin.register(ProductSales)
 class ProductSalesAdmin(admin.ModelAdmin):
-    list_display = ('product', 'sales_count', 'return_count')  # Columns to display in the admin list view
-    list_filter = ('product__category',)  # Add a filter for product categories (if applicable)
-    search_fields = ('product__name',)  # Enable searching by product name
-    ordering = ('-sales_count',)  # Default ordering by highest sales count
-    list_editable = ('sales_count', 'return_count')  # Allow inline editing of these fields
-    readonly_fields = ('product',)  # Make the product field read-only to prevent accidental changes
+    list_display = ('product', 'sales_count', 'return_count') 
+    list_filter = ('product__category',) 
+    search_fields = ('product__name',)
+    ordering = ('-sales_count',)  
+    list_editable = ('sales_count', 'return_count')  
+    readonly_fields = ('product',)  
     actions = [reset_sales_count, reset_return_count]

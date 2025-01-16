@@ -77,7 +77,7 @@
 
                 </div>
             </div>
-<!-- Typing Indicator (Invisible by Default) -->
+<!-- Typing Indicator -->
 <div id="typing-indicator" class="hidden flex items-center space-x-2 p-2 text-purple-600">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m0 14v1m8-8h1M4 12H3m15.36 7.36l.7.7m-13.42-13.4l-.7-.7m13.42 0l.7-.7m-13.42 13.4l-.7.7"/>
@@ -162,29 +162,25 @@ function sendQuickReply(message) {
 }
 
 const chatBox = document.getElementById('chat-box');
-chatBox.scrollTop = chatBox.scrollHeight;  // 📜 Auto-scroll to bottom
+chatBox.scrollTop = chatBox.scrollHeight;  
 
 const userInput = document.getElementById('user-input');
 
-// 🎨 Format the Bot Response for Better Readability
+
 function formatBotResponse(message) {
-    // Convert **bold** to <strong> and *italic* to <em>
     message = message.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>');
     message = message.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
 
-    // Format numbered and bullet lists
     message = message.replace(/(\d+)\.\s/g, '<br><span class="font-semibold">$1.</span> ');
     message = message.replace(/[-•]\s/g, '<br>• ');
 
-    // Add line breaks
     message = message.replace(/\n/g, '<br>');
 
     return message;
 }
 
-// 💬 Append Messages to Chat
 function appendMessage(sender, message) {
-    const safeMessage = formatBotResponse(escapeHTML(message));  // ✨ Apply formatting
+    const safeMessage = formatBotResponse(escapeHTML(message)); 
     const messageDiv = document.createElement('div');
 
     if (sender === 'User') {
@@ -214,17 +210,15 @@ function appendMessage(sender, message) {
     }
 
     chatBox.appendChild(messageDiv);
-    chatBox.scrollTop = chatBox.scrollHeight;  // 🔄 Auto-scroll
+    chatBox.scrollTop = chatBox.scrollHeight;  
 }
 
-// ⌨️ Enter Key to Send Message
 userInput.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
         sendMessage();
     }
 });
 
-// 📤 Send Message Function
 function sendMessage() {
     const message = userInput.value.trim();
     if (!message) return;
@@ -232,7 +226,6 @@ function sendMessage() {
     appendMessage('User', message);
     userInput.value = '';
 
-    // 🕐 Show Typing Indicator
     showTypingIndicator();
 
     fetch("{% url 'chatbot:process_query' %}", {
@@ -245,7 +238,7 @@ function sendMessage() {
     })
         .then(response => response.json())
         .then(data => {
-            hideTypingIndicator();  // ✅ Hide after response
+            hideTypingIndicator();  
             if (data.response) {
                 appendMessage('Bot', data.response);
             } else {
@@ -259,7 +252,6 @@ function sendMessage() {
         });
 }
 
-// ⏳ Typing Indicator Functions
 function showTypingIndicator() {
     if (!document.getElementById('typing-indicator')) {
         const typingDiv = document.createElement('div');

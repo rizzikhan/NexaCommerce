@@ -6,6 +6,8 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_google_genai.llms import GoogleGenerativeAI
 from display.models import Watchlist, Comment , Product
 from cart.models import Cart,OrderDone ,ProductSales
+from django.utils.html import format_html
+
 
 # Process PDF into FAISS
 def process_pdf(file_path):
@@ -29,19 +31,16 @@ def load_static_vector_store():
     return FAISS.load_local(
         folder_path='shared_storage/vectorstore/faiss_index',
         embeddings=embeddings,
-        allow_dangerous_deserialization=True  # ⚠️ Allow deserialization
+        allow_dangerous_deserialization=True 
     )
 
 def get_dynamic_user_data(user):
-    from django.utils.html import format_html
 
-    # ✅ Check if the user is authenticated
     if not user.is_authenticated:
         return format_html("<b>⚠️ You need to be logged in to view personalized data.</b>")
 
-    # Fetch user-specific data
     cart_items = Cart.objects.filter(user=user)
-    orders = OrderDone.objects.filter(user=user).order_by('-created_at')  # Get latest orders first
+    orders = OrderDone.objects.filter(user=user).order_by('-created_at')  
     watchlist = Watchlist.objects.filter(user=user)
     comments = Comment.objects.filter(user=user)
     product_sales = ProductSales.objects.all()
@@ -136,10 +135,10 @@ def combine_data(user_query, user):
 
     return f"User Data:\n{dynamic_data}\n\nCompany Policies:\n{static_data}"
 
-# Query combined data
+# Query combined data and user question processing 
 def query_combined_data(user_query, user):
     try:
-        context = combine_data(user_query, user)
+        context = combine_data(user_query, user) #static and dynamic data coming from db 
         llm = GoogleGenerativeAI(model="gemini-1.5-flash")
         prompt = f"Context:\n{context}\n\nUser Question: {user_query}\nAnswer:"
         return llm.predict(prompt)

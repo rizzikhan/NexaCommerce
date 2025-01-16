@@ -6,7 +6,6 @@ from django_ratelimit.decorators import ratelimit
 from .models import ChatHistory
 
 def chatbot_view(request):
-    # Show chat history if the user is logged in
     if request.user.is_authenticated:
         chat_history = ChatHistory.objects.filter(user=request.user).order_by('timestamp')
     else:
@@ -37,18 +36,15 @@ def process_pdf_view(request, document_id):
 
 
 
-from django.contrib.auth.decorators import login_required
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def process_query(request):
     if request.method == 'POST':
         user_query = request.POST.get('question')
 
-        # ✅ Check if the user is logged in
         if not request.user.is_authenticated:
             return JsonResponse({'response': "⚠️ Please log in to access your personal data."})
 
-        # 🚀 Process query if logged in
         if user_query:
             response = query_combined_data(user_query, request.user)
 
