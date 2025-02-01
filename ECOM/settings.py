@@ -140,6 +140,8 @@ ALLOWED_HOSTS = [
     'localhost',
     '.ngrok-free.app',
     'f1a0-39-45-6-101.ngrok-free.app'
+    '.vercel.app',
+      'localhost'
 
 ]
 #will accept POST requests from this domains 
@@ -159,49 +161,45 @@ CORS_ALLOWED_ORIGINS = [
 
 
 
-#For Testing 
-# # For Security make false in production
-DEBUG = True
-# Enforce HTTPS by redirecting HTTP to HTTPS
-SECURE_SSL_REDIRECT = False
-SECURE_HSTS_SECONDS = 0
-# Use Secure Cookies but will not work if use cookies in authentication 
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
-# Enable HSTS
-SECURE_HSTS_SECONDS = 0
-SECURE_HSTS_INCLUDE_SUBDOMAINS = False
-SECURE_HSTS_PRELOAD = False
-# XSS Protection
-SECURE_BROWSER_XSS_FILTER = False
-# Clickjacking Protection
-X_FRAME_OPTIONS = 'DENY'
-SECURE_CONTENT_TYPE_NOSNIFF = False
-SESSION_COOKIE_SECURE = False      # Cookies sent over HTTPS only
-SESSION_COOKIE_HTTPONLY = False    # Prevent JS access to cookies
-SESSION_EXPIRE_AT_BROWSER_CLOSE = False
-SESSION_COOKIE_AGE = 1800         # 30 minutes
-CSRF_COOKIE_SAMESITE = 'Lax'
-
-
-
-
-
-
-# # For Production
-# # For Security make false in production
-# DEBUG = False
-# Enforce HTTPS by redirecting HTTP to HTTPS
-# SECURE_SSL_REDIRECT = True
-# Use Secure Cookies but will not work if use cookies in authentication 
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
-# SECURE_HSTS_SECONDS = 31536000
-# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-# SECURE_HSTS_PRELOAD = True
-# XSS Protection
-# SECURE_BROWSER_XSS_FILTER = True
-# Clickjacking Protection
+# #For Testing 
+# # # For Security make false in production
+# DEBUG = True
+# # Enforce HTTPS by redirecting HTTP to HTTPS
+# SECURE_SSL_REDIRECT = False
+# SECURE_HSTS_SECONDS = 0
+# # Use Secure Cookies but will not work if use cookies in authentication 
+# SESSION_COOKIE_SECURE = False
+# CSRF_COOKIE_SECURE = False
+# # Enable HSTS
+# SECURE_HSTS_SECONDS = 0
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+# SECURE_HSTS_PRELOAD = False
+# # XSS Protection
+# SECURE_BROWSER_XSS_FILTER = False
+# # Clickjacking Protection
 # X_FRAME_OPTIONS = 'DENY'
-# SECURE_CONTENT_TYPE_NOSNIFF = True
+# SECURE_CONTENT_TYPE_NOSNIFF = False
+# SESSION_COOKIE_SECURE = False      # Cookies sent over HTTPS only
+# SESSION_COOKIE_HTTPONLY = False    # Prevent JS access to cookies
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+# SESSION_COOKIE_AGE = 1800         # 30 minutes
 # CSRF_COOKIE_SAMESITE = 'Lax'
+
+
+
+
+
+
+# For Production
+# For Security make false in production
+DEBUG = False
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_CONTENT_TYPE_NOSNIFF = True
+CSRF_COOKIE_SAMESITE = 'Lax'
